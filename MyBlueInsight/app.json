@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "scheme": "myblueinsight",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "backgroundColor": "#ffffff"
     },
