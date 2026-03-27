@@ -15,10 +15,6 @@ import { ArtStyleCard } from '../../src/components/art/ArtStyleCard';
 import { ArtCanvas } from '../../src/components/art/ArtCanvas';
 import { formatDateKey, getWeekRange } from '../../src/utils/dateHelpers';
 import { MoodEntryRow } from '../../src/db/moodRepository';
-import { makeImageFromView } from '@shopify/react-native-skia';
-import * as MediaLibrary from 'expo-media-library';
-import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
 
 type Period = 'Week' | 'Month' | 'Year';
@@ -72,39 +68,11 @@ export default function ArtScreen() {
   };
 
   const handleSave = async () => {
-    if (!canvasRef.current) return;
-    setSaving(true);
-    try {
-      const image = await makeImageFromView(canvasRef);
-      if (image) {
-        const base64 = image.encodeToBase64();
-        const uri = FileSystem.cacheDirectory + `mood-art-${Date.now()}.png`;
-        await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status === 'granted') {
-          await MediaLibrary.saveToLibraryAsync(uri);
-          Alert.alert('Saved!', 'Art saved to your Photos.');
-        } else {
-          Alert.alert('Permission needed', 'Please allow photo access in Settings.');
-        }
-      }
-    } catch (err) {
-      Alert.alert('Error', 'Could not save image.');
-    }
-    setSaving(false);
+    Alert.alert('Save', 'To save this artwork, take a screenshot of the canvas.');
   };
 
   const handleShare = async () => {
-    if (!canvasRef.current) return;
-    try {
-      const image = await makeImageFromView(canvasRef);
-      if (image) {
-        const base64 = image.encodeToBase64();
-        const uri = FileSystem.cacheDirectory + `mood-art-share-${Date.now()}.png`;
-        await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
-        await Sharing.shareAsync(uri);
-      }
-    } catch {}
+    Alert.alert('Share', 'To share this artwork, take a screenshot and share from your Photos app.');
   };
 
   return (
@@ -163,7 +131,7 @@ export default function ArtScreen() {
                 entries={filteredEntries}
                 style={style}
                 seed={seed}
-                size={340}
+                size={300}
               />
             </View>
 
