@@ -1,15 +1,16 @@
-# MyBlueInsight - Product Specification
+# MyBlueInsight - Product Specification (React Native / Expo)
 
 ## 1. App Overview
 
 | Field | Value |
 |-------|-------|
 | **App Name** | MyBlueInsight |
-| **Platform** | iOS (SwiftUI) |
-| **Target** | iPhone, iOS 17+ |
-| **Storage** | Local only (SwiftData) |
-| **Architecture** | MVVM |
-| **Dependencies** | None (zero external deps for MVP) |
+| **Platform** | iOS + Android (React Native / Expo) |
+| **Target** | iPhone & Android phones |
+| **Storage** | Local only (expo-sqlite) |
+| **Architecture** | Feature-based with React hooks |
+| **Language** | TypeScript |
+| **Key Dependencies** | expo, expo-router, expo-sqlite, @shopify/react-native-skia, expo-haptics, expo-media-library, expo-sharing |
 
 ## 2. Core Features
 
@@ -57,7 +58,7 @@ Segmented control at top: **Week | Month | Year**
 
 #### Weekly View
 - Horizontal strip of 7 colored circles (Mon-Sun)
-- Below: pie chart showing mood color distribution percentages
+- Below: distribution bars showing mood color percentages
 - Date range label (e.g., "Mar 17 - Mar 23, 2026")
 - Navigate weeks with left/right arrows
 
@@ -94,105 +95,135 @@ Segmented control at top: **Week | Month | Year**
 - Large "Generate Art" button
 - Shows a loading animation while generating
 - Generated art displayed in a card view
-- Share button (UIActivityViewController)
-- Save to Photos button
+- Share button (expo-sharing)
+- Save to Photos button (expo-media-library)
 - "Generate Again" to regenerate with different random seed
 
 #### Art Generation Algorithm
 Each style uses the mood colors and their ratios:
 - Calculate color frequencies from the selected time period
 - Colors with higher frequency get more visual weight in the artwork
-- Use `Canvas` / `GraphicsContext` in SwiftUI for rendering
-- Each generation uses a random seed for variety
+- Use `@shopify/react-native-skia` Canvas for GPU-accelerated rendering
+- Each generation uses a seeded random (mulberry32 PRNG)
 - Output resolution: 1080x1080 pixels
 
-## 3. Data Model (SwiftData)
+## 3. Data Model (SQLite via expo-sqlite)
 
-```swift
-@Model
-class MoodEntry {
-    @Attribute(.unique) var id: UUID
-    var date: Date           // calendar date (time component stripped)
-    var colorHex: String     // e.g., "#FF3B30"
-    var moodName: String     // e.g., "Angry"
-    var note: String?        // optional, max 280 chars
-    var createdAt: Date
-    var updatedAt: Date
+```sql
+CREATE TABLE IF NOT EXISTS mood_entries (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  date TEXT NOT NULL UNIQUE,        -- ISO date string "YYYY-MM-DD"
+  color_hex TEXT NOT NULL,          -- e.g., "#FF3B30"
+  mood_name TEXT NOT NULL,          -- e.g., "Angry / Frustrated"
+  note TEXT,                        -- optional, max 280 chars
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS artworks (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  image_uri TEXT NOT NULL,          -- file URI to saved PNG
+  time_range_start TEXT NOT NULL,
+  time_range_end TEXT NOT NULL,
+  style TEXT NOT NULL,              -- "watercolor", "mosaic", "flowfield", "nebula"
+  generated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+
+### TypeScript types:
+
+```typescript
+interface MoodEntry {
+  id: string;
+  date: string;       // "YYYY-MM-DD"
+  colorHex: string;
+  moodName: string;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-@Model
-class Artwork {
-    @Attribute(.unique) var id: UUID
-    var imageData: Data      // PNG data
-    var timeRangeStart: Date
-    var timeRangeEnd: Date
-    var style: String        // "watercolor", "mosaic", "flowfield", "nebula"
-    var generatedAt: Date
+interface Artwork {
+  id: string;
+  imageUri: string;
+  timeRangeStart: string;
+  timeRangeEnd: string;
+  style: 'watercolor' | 'mosaic' | 'flowfield' | 'nebula';
+  generatedAt: string;
+}
+
+interface MoodColor {
+  key: string;
+  hex: string;
+  name: string;
 }
 ```
 
-## 4. Navigation Structure
+## 4. Navigation Structure (expo-router with tabs)
 
 ```
-TabView
-├── Tab 1: CalendarView (calendar.circle icon)
-│   └── Sheet: MoodPickerSheet (bottom sheet)
-├── Tab 2: ReviewView (chart.bar icon)
-│   ├── Segment: WeeklyReviewView
-│   ├── Segment: MonthlyReviewView
-│   └── Segment: YearlyReviewView
-└── Tab 3: ArtView (paintpalette icon)
-    └── Sheet: ArtDetailView (full screen)
+app/
+├── _layout.tsx            # Root layout with SQLite provider
+├── (tabs)/
+│   ├── _layout.tsx        # Tab navigator (Calendar, Review, Art)
+│   ├── index.tsx          # Calendar tab
+│   ├── review.tsx         # Review tab
+│   └── art.tsx            # Art tab
 ```
 
 ## 5. File Structure
 
 ```
 MyBlueInsight/
-├── MyBlueInsightApp.swift          # App entry point with SwiftData container
-├── Models/
-│   ├── MoodEntry.swift             # SwiftData model
-│   ├── Artwork.swift               # SwiftData model
-│   └── MoodColor.swift             # Enum with all 10 mood colors
-├── ViewModels/
-│   ├── CalendarViewModel.swift     # Calendar logic, mood CRUD
-│   ├── ReviewViewModel.swift       # Statistics calculations
-│   └── ArtViewModel.swift          # Art generation orchestration
-├── Views/
-│   ├── ContentView.swift           # TabView container
-│   ├── Calendar/
-│   │   ├── CalendarView.swift      # Monthly calendar grid
-│   │   ├── DayCell.swift           # Individual day cell
-│   │   └── MoodPickerSheet.swift   # Color selection bottom sheet
-│   ├── Review/
-│   │   ├── ReviewView.swift        # Review container with segments
-│   │   ├── WeeklyReviewView.swift
-│   │   ├── MonthlyReviewView.swift
-│   │   └── YearlyReviewView.swift
-│   └── Art/
-│       ├── ArtView.swift           # Art tab main view
-│       ├── ArtStyleCard.swift      # Style selection card
-│       └── ArtDetailView.swift     # Full screen art display
-├── Services/
-│   └── ArtGenerator.swift          # All 4 art generation algorithms
-├── Extensions/
-│   ├── Color+Hex.swift             # Color <-> Hex conversion
-│   └── Date+Extensions.swift       # Date helpers
-└── Assets.xcassets/
-    └── (app icon, accent color)
+├── app/
+│   ├── _layout.tsx                 # Root layout, SQLite init, theme
+│   └── (tabs)/
+│       ├── _layout.tsx             # Tab bar configuration
+│       ├── index.tsx               # Calendar screen
+│       ├── review.tsx              # Review screen
+│       └── art.tsx                 # Art screen
+├── src/
+│   ├── constants/
+│   │   └── moodColors.ts          # 10 mood colors definition
+│   ├── db/
+│   │   ├── database.ts            # SQLite setup & migration
+│   │   └── moodRepository.ts      # CRUD operations for mood_entries
+│   ├── hooks/
+│   │   ├── useMoods.ts            # Hook for mood data queries
+│   │   └── useReviewStats.ts      # Hook for statistics calculations
+│   ├── components/
+│   │   ├── calendar/
+│   │   │   ├── CalendarGrid.tsx    # Monthly calendar grid
+│   │   │   ├── DayCell.tsx         # Individual day cell
+│   │   │   └── MoodPickerSheet.tsx # Bottom sheet color picker
+│   │   ├── review/
+│   │   │   ├── WeeklyReview.tsx
+│   │   │   ├── MonthlyReview.tsx
+│   │   │   ├── YearlyReview.tsx
+│   │   │   └── StatisticsCard.tsx
+│   │   └── art/
+│   │       ├── ArtStyleCard.tsx
+│   │       └── ArtCanvas.tsx       # Skia canvas for art rendering
+│   ├── services/
+│   │   └── artGenerator.ts         # All 4 art generation algorithms (Skia)
+│   └── utils/
+│       └── dateHelpers.ts          # Date utility functions
+├── app.json                        # Expo config
+├── package.json
+└── tsconfig.json
 ```
 
 ## 6. UI/UX Requirements
 
 - **Theme**: Clean, minimalist, plenty of white space
-- **Dark Mode**: Full support (use semantic colors)
-- **Typography**: SF Pro (system font), varying weights
+- **Dark Mode**: Full support (use `useColorScheme()` + themed styles)
+- **Typography**: System font (San Francisco on iOS, Roboto on Android)
 - **Animations**:
-  - Smooth color fill on mood selection
+  - Smooth color fill on mood selection (React Native Reanimated)
   - Gentle scale animation on day cell tap
   - Art generation progress animation
-- **Haptics**: Light impact on color selection, success on save
-- **Accessibility**: VoiceOver labels for all mood colors
+- **Haptics**: expo-haptics for light impact on color selection, success on save
+- **Accessibility**: accessibilityLabel on all mood color buttons
 
 ## 7. MVP Scope
 
@@ -203,28 +234,32 @@ MyBlueInsight/
 - [x] Edit past days
 - [x] Weekly/Monthly/Yearly review grids
 - [x] Basic statistics (most common mood, streak)
-- [x] Art generation (all 4 styles)
+- [x] Art generation (all 4 styles via Skia)
 - [x] Save art to Photos
 - [x] Share art
 - [x] Dark mode
 - [x] Haptic feedback
+- [x] Works on both iOS and Android
 
 ### Future (v2.0+)
-- [ ] Widgets (iOS home screen widget showing current week)
+- [ ] Widgets (home screen widget)
 - [ ] Notifications/reminders to log mood
-- [ ] iCloud sync
+- [ ] Cloud sync
 - [ ] Multiple moods per day (morning/afternoon/evening)
 - [ ] Mood insights with trends analysis
 - [ ] Custom color/mood creation
-- [ ] Apple Watch companion app
 - [ ] Export mood data as CSV
-- [ ] Social sharing of review grids
 
 ## 8. Technical Notes
 
-- Use `@Observable` macro (iOS 17+) for ViewModels
-- Use `SwiftData` with `@Model` macro for persistence
-- Calendar calculations via `Calendar` and `DateComponents`
-- Art generation on background thread with `Task { }`
-- Use `ImageRenderer` or `Canvas` for art output
-- No third-party dependencies
+- **Expo SDK 52+** with expo-router for file-based navigation
+- **TypeScript** throughout
+- **expo-sqlite** for local persistence (synchronous API, no ORM needed)
+- **@shopify/react-native-skia** for art generation (GPU-accelerated Canvas)
+- **expo-haptics** for haptic feedback
+- **expo-media-library** for saving art to Photos
+- **expo-sharing** for share sheet
+- **react-native-reanimated** for smooth animations
+- Art generation runs on JS thread but Skia rendering is GPU-bound so it stays smooth
+- Seeded PRNG (mulberry32) for reproducible art with variety
+- No backend, no accounts, fully offline

@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "MyBlueInsight",
+    "slug": "myblueinsight",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "myblueinsight",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.myblueinsight.app",
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "MyBlueInsight saves your mood art to Photos"
+      }
+    },
+    "android": {
+      "package": "com.myblueinsight.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": ["WRITE_EXTERNAL_STORAGE"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-haptics",
+      "expo-media-library",
+      "expo-sharing"
+    ]
+  }
+}

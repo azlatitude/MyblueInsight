@@ -1,0 +1,136 @@
+import React, { useState, useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
+import { MoodEntryRow } from '../../db/moodRepository';
+import { getWeekRange, formatDateKey, formatDateRange } from '../../utils/dateHelpers';
+import { useMoodDistribution } from '../../hooks/useReviewStats';
+import { Ionicons } from '@expo/vector-icons';
+
+interface Props { entries: MoodEntryRow[] }
+
+export function WeeklyReview({ entries }: Props) {
+  const isDark = useColorScheme() === 'dark';
+  const textColor = isDark ? '#fff' : '#000';
+  const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
+  const [weekDate, setWeekDate] = useState(new Date());
+
+  const { start, end } = getWeekRange(weekDate);
+
+  const weekEntries = useMemo(() => {
+    const s = formatDateKey(start);
+    const e = formatDateKey(end);
+    return entries.filter((entry) => entry.date >= s && entry.date <= e);
+  }, [entries, start, end]);
+
+  const distribution = useMoodDistribution(weekEntries);
+
+  const weekDays = useMemo(() => {
+    const days: Date[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  }, [start]);
+
+  const navigate = (dir: number) => {
+    const d = new Date(weekDate);
+    d.setDate(d.getDate() + dir * 7);
+    setWeekDate(d);
+  };
+
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  return (
+    <View>
+      <View style={styles.nav}>
+        <TouchableOpacity onPress={() => navigate(-1)}>
+          <Ionicons name="chevron-back" size={22} color={textColor} />
+        </TouchableOpacity>
+        <Text style={[styles.rangeText, { color: textColor }]}>
+          {formatDateRange(start, end)}
+        </Text>
+        <TouchableOpacity onPress={() => navigate(1)}>
+          <Ionicons name="chevron-forward" size={22} color={textColor} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: cardBg }]}>
+        <View style={styles.strip}>
+          {weekDays.map((d, i) => {
+            const key = formatDateKey(d);
+            const entry = entries.find((e) => e.date === key);
+            return (
+              <View key={i} style={styles.stripDay}>
+                <View
+                  style={[
+                    styles.circle,
+                    { backgroundColor: entry ? entry.color_hex : (isDark ? '#333' : '#e0e0e0') },
+                  ]}
+                />
+                <Text style={[styles.dayLabel, { color: isDark ? '#888' : '#666' }]}>
+                  {dayLabels[i]}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: cardBg }]}>
+        <Text style={[styles.sectionTitle, { color: textColor }]}>Distribution</Text>
+        {distribution.length === 0 ? (
+          <Text style={{ color: isDark ? '#666' : '#999', paddingVertical: 12 }}>
+            No moods this week
+          </Text>
+        ) : (
+          distribution.map((d) => (
+            <View key={d.mood.key} style={styles.distRow}>
+              <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
+              <Text style={[styles.distName, { color: textColor }]} numberOfLines={1}>
+                {d.mood.name.split(' / ')[0]}
+              </Text>
+              <View style={styles.distBarBg}>
+                <View
+                  style={[styles.distBar, { backgroundColor: d.mood.hex, width: `${d.ratio * 100}%` }]}
+                />
+              </View>
+              <Text style={[styles.distPct, { color: isDark ? '#888' : '#666' }]}>
+                {Math.round(d.ratio * 100)}%
+              </Text>
+            </View>
+          ))
+        )}
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  rangeText: { fontSize: 16, fontWeight: '600' },
+  card: { borderRadius: 12, padding: 16, marginBottom: 16 },
+  strip: { flexDirection: 'row', justifyContent: 'space-around' },
+  stripDay: { alignItems: 'center' },
+  circle: { width: 32, height: 32, borderRadius: 16 },
+  dayLabel: { fontSize: 11, marginTop: 4 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
+  distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  distDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
+  distName: { width: 80, fontSize: 12 },
+  distBarBg: {
+    flex: 1,
+    height: 14,
+    borderRadius: 3,
+    backgroundColor: 'rgba(128,128,128,0.15)',
+    marginHorizontal: 8,
+    overflow: 'hidden',
+  },
+  distBar: { height: '100%', borderRadius: 3 },
+  distPct: { width: 32, fontSize: 11, textAlign: 'right' },
+});
