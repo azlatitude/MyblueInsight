@@ -37,7 +37,8 @@
             "kotlinVersion": "2.0.21"
           }
         }
-      ]
+      ],
+      "./plugins/withRemoveEnableBundleCompression"
     ],
     "extra": {
       "router": {
