@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,10 @@ import {
 import { useMoods } from '../../src/hooks/useMoods';
 import { ArtStyleCard } from '../../src/components/art/ArtStyleCard';
 import { ArtCanvas } from '../../src/components/art/ArtCanvas';
+import { PaintingCard } from '../../src/components/art/PaintingCard';
 import { formatDateKey, getWeekRange } from '../../src/utils/dateHelpers';
 import { MoodEntryRow } from '../../src/db/moodRepository';
+import { findMatchingPainting } from '../../src/services/paintingMatcher';
 import { Ionicons } from '@expo/vector-icons';
 
 type Period = 'Week' | 'Month' | 'Year';
@@ -43,6 +45,7 @@ export default function ArtScreen() {
   const canvasRef = useRef<any>(null);
 
   const filteredEntries = getEntriesForPeriod(entries, period);
+  const paintingMatch = useMemo(() => findMatchingPainting(filteredEntries), [filteredEntries]);
 
   function getEntriesForPeriod(allEntries: MoodEntryRow[], p: Period): MoodEntryRow[] {
     const now = new Date();
@@ -153,6 +156,12 @@ export default function ArtScreen() {
                 <Text style={[styles.actionText, { color: textColor }]}>Again</Text>
               </TouchableOpacity>
             </View>
+
+            {paintingMatch && (
+              <View style={styles.paintingSection}>
+                <PaintingCard match={paintingMatch} />
+              </View>
+            )}
           </View>
         )}
 
@@ -200,4 +209,5 @@ const styles = StyleSheet.create({
   actionText: { fontSize: 12 },
   placeholder: { alignItems: 'center', marginTop: 40, gap: 12 },
   placeholderText: { fontSize: 14, textAlign: 'center', paddingHorizontal: 40 },
+  paintingSection: { width: '100%', paddingHorizontal: 16 },
 });
