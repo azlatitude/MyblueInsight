@@ -12,7 +12,7 @@ export const MOOD_COLORS: MoodColor[] = [
   { key: 'lightBlue', hex: '#5AC8FA', name: 'Calm / Peaceful' },
   { key: 'darkBlue', hex: '#007AFF', name: 'Sad / Blue' },
   { key: 'purple', hex: '#AF52DE', name: 'Creative / Inspired' },
-  { key: 'pink', hex: '#FF2D55', name: 'Loving / Grateful' },
+  { key: 'pink', hex: '#FF6B9D', name: 'Loving / Grateful' },
   { key: 'gray', hex: '#8E8E93', name: 'Neutral / Indifferent' },
   { key: 'black', hex: '#1C1C1E', name: 'Exhausted / Drained' },
 ];
