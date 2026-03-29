@@ -17,8 +17,8 @@ export function useMoods() {
   }, [refresh]);
 
   const save = useCallback(
-    async (date: Date, colorHex: string, moodName: string, note: string | null) => {
-      await saveMood(formatDateKey(date), colorHex, moodName, note);
+    async (date: Date, colorHex: string, moodKey: string, moodName: string, note: string | null) => {
+      await saveMood(formatDateKey(date), colorHex, moodKey, moodName, note);
       await refresh();
     },
     [refresh]

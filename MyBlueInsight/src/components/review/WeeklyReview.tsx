@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-
 import { MoodEntryRow } from '../../db/moodRepository';
 import { getWeekRange, formatDateKey, formatDateRange } from '../../utils/dateHelpers';
 import { useMoodDistribution } from '../../hooks/useReviewStats';
+import { usePalette } from '../../context/PaletteContext';
+import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props { entries: MoodEntryRow[] }
@@ -11,6 +13,7 @@ export function WeeklyReview({ entries }: Props) {
   const isDark = useColorScheme() === 'dark';
   const textColor = isDark ? '#fff' : '#000';
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
+  const { getHexForKey } = usePalette();
   const [weekDate, setWeekDate] = useState(new Date());
 
   const { start, end } = getWeekRange(weekDate);
@@ -65,7 +68,7 @@ export function WeeklyReview({ entries }: Props) {
                 <View
                   style={[
                     styles.circle,
-                    { backgroundColor: entry ? entry.color_hex : (isDark ? '#333' : '#e0e0e0') },
+                    { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
                   ]}
                 />
                 <Text style={[styles.dayLabel, { color: isDark ? '#888' : '#666' }]}>

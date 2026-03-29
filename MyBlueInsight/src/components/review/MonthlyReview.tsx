@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-
 import { MoodEntryRow } from '../../db/moodRepository';
 import { formatMonthYear, formatDateKey, getMonthDays, getFirstWeekdayOfMonth } from '../../utils/dateHelpers';
 import { useMoodDistribution, useMostCommonMood, useLongestStreak, useDiversityScore } from '../../hooks/useReviewStats';
+import { usePalette } from '../../context/PaletteContext';
+import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props { entries: MoodEntryRow[] }
@@ -11,6 +13,7 @@ export function MonthlyReview({ entries }: Props) {
   const isDark = useColorScheme() === 'dark';
   const textColor = isDark ? '#fff' : '#000';
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
+  const { getHexForKey } = usePalette();
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
 
@@ -67,7 +70,7 @@ export function MonthlyReview({ entries }: Props) {
                 <View
                   style={[
                     styles.gridDot,
-                    { backgroundColor: entry ? entry.color_hex : (isDark ? '#222' : '#eee') },
+                    { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') },
                   ]}
                 />
               </View>

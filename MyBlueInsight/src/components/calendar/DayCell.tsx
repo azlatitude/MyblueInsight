@@ -2,6 +2,8 @@ import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, useColorScheme } from 'react-native';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { isToday, isFuture } from '../../utils/dateHelpers';
+import { usePalette } from '../../context/PaletteContext';
+import { MoodKey, isLightColor } from '../../constants/palettes';
 
 interface Props {
   date: Date;
@@ -14,9 +16,11 @@ export function DayCell({ date, entry, onPress }: Props) {
   const today = isToday(date);
   const future = isFuture(date);
   const dayNum = date.getDate();
+  const { getHexForKey } = usePalette();
 
-  const bgColor = entry ? entry.color_hex : 'transparent';
-  const needsDarkText = entry && ['#FFCC00', '#5AC8FA', '#FF9500', '#34C759'].includes(entry.color_hex);
+  const displayHex = entry ? getHexForKey(entry.mood_key as MoodKey) : undefined;
+  const bgColor = displayHex ?? 'transparent';
+  const needsDarkText = displayHex ? isLightColor(displayHex) : false;
   const textColor = entry
     ? (needsDarkText ? '#000' : '#fff')
     : (isDark ? '#fff' : '#000');
@@ -28,7 +32,7 @@ export function DayCell({ date, entry, onPress }: Props) {
       style={[
         styles.cell,
         {
-          backgroundColor: entry ? bgColor : 'transparent',
+          backgroundColor: displayHex ?? 'transparent',
           borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
           borderWidth: today ? 2.5 : (entry ? 0 : 1),
           opacity: future ? 0.3 : 1,

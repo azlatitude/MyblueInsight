@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet, useColorScheme } 
 import { MoodEntryRow } from '../../db/moodRepository';
 import { formatDateKey } from '../../utils/dateHelpers';
 import { useMostCommonMood, useDiversityScore } from '../../hooks/useReviewStats';
+import { usePalette } from '../../context/PaletteContext';
+import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -13,6 +15,7 @@ export function YearlyReview({ entries }: Props) {
   const isDark = useColorScheme() === 'dark';
   const textColor = isDark ? '#fff' : '#000';
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
+  const { getHexForKey } = usePalette();
   const [year, setYear] = useState(new Date().getFullYear());
 
   const yearEntries = useMemo(() => {
@@ -26,8 +29,8 @@ export function YearlyReview({ entries }: Props) {
   const coverage = daysInYear > 0 ? Math.round((totalDays / daysInYear) * 100) : 0;
 
   const entryMap = useMemo(() => {
-    const m = new Map<string, string>();
-    yearEntries.forEach((e) => m.set(e.date, e.color_hex));
+    const m = new Map<string, MoodKey>();
+    yearEntries.forEach((e) => m.set(e.date, (e.mood_key ?? 'gray') as MoodKey));
     return m;
   }, [yearEntries]);
 
@@ -54,13 +57,13 @@ export function YearlyReview({ entries }: Props) {
                   <Text style={[styles.monthLabel, { color: isDark ? '#888' : '#666' }]}>{mName}</Text>
                   {Array.from({ length: daysInMonth }, (_, d) => {
                     const key = `${year}-${String(mIdx + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
-                    const hex = entryMap.get(key);
+                    const moodKey = entryMap.get(key);
                     return (
                       <View
                         key={d}
                         style={[
                           styles.yearDot,
-                          { backgroundColor: hex ?? (isDark ? '#222' : '#eee') },
+                          { backgroundColor: moodKey ? getHexForKey(moodKey) : (isDark ? '#222' : '#eee') },
                         ]}
                       />
                     );

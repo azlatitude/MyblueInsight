@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { CalendarGrid } from '../../src/components/calendar/CalendarGrid';
 import { MoodPickerSheet } from '../../src/components/calendar/MoodPickerSheet';
+import { PalettePickerSheet } from '../../src/components/settings/PalettePickerSheet';
 import { useMoods } from '../../src/hooks/useMoods';
 import { formatMonthYear } from '../../src/utils/dateHelpers';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +23,7 @@ export default function CalendarScreen() {
   const [month, setMonth] = useState(new Date().getMonth());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [showPalette, setShowPalette] = useState(false);
 
   const moodMap = getMoodMap();
 
@@ -41,9 +43,9 @@ export default function CalendarScreen() {
   }, []);
 
   const handleSave = useCallback(
-    async (colorHex: string, moodName: string, note: string | null) => {
+    async (colorHex: string, moodKey: string, moodName: string, note: string | null) => {
       if (selectedDate) {
-        await save(selectedDate, colorHex, moodName, note);
+        await save(selectedDate, colorHex, moodKey, moodName, note);
       }
       setShowPicker(false);
     },
@@ -61,9 +63,14 @@ export default function CalendarScreen() {
         <Text style={[styles.title, { color: textColor }]}>
           {formatMonthYear(year, month)}
         </Text>
-        <TouchableOpacity onPress={goForward} style={styles.navBtn}>
-          <Ionicons name="chevron-forward" size={24} color={textColor} />
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={() => setShowPalette(true)} style={styles.navBtn}>
+            <Ionicons name="color-palette-outline" size={22} color={textColor} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={goForward} style={styles.navBtn}>
+            <Ionicons name="chevron-forward" size={24} color={textColor} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <CalendarGrid
@@ -83,6 +90,10 @@ export default function CalendarScreen() {
           onClose={() => setShowPicker(false)}
         />
       </Modal>
+
+      <Modal visible={showPalette} animationType="slide" transparent>
+        <PalettePickerSheet onClose={() => setShowPalette(false)} />
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -95,6 +106,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: { fontSize: 20, fontWeight: '700' },
   navBtn: { padding: 8 },

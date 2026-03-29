@@ -12,14 +12,14 @@ import {
   ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { MOOD_COLORS } from '../../constants/moodColors';
+import { usePalette } from '../../context/PaletteContext';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
   date: Date | null;
   existingEntry: MoodEntryRow | null;
-  onSave: (colorHex: string, moodName: string, note: string | null) => void;
+  onSave: (colorHex: string, moodKey: string, moodName: string, note: string | null) => void;
   onClose: () => void;
 }
 
@@ -27,9 +27,10 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
   const isDark = useColorScheme() === 'dark';
   const bg = isDark ? '#1c1c1e' : '#fff';
   const textColor = isDark ? '#fff' : '#000';
+  const { colors } = usePalette();
 
   const [selectedHex, setSelectedHex] = useState<string | null>(
-    existingEntry?.color_hex ?? null
+    existingEntry ? colors.find((c) => c.key === existingEntry.mood_key)?.hex ?? existingEntry.color_hex : null
   );
   const [note, setNote] = useState(existingEntry?.note ?? '');
 
@@ -40,10 +41,10 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
 
   const handleSave = () => {
     if (!selectedHex) return;
-    const mood = MOOD_COLORS.find((m) => m.hex === selectedHex);
+    const mood = colors.find((m) => m.hex === selectedHex);
     if (!mood) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    onSave(mood.hex, mood.name, note.trim() || null);
+    onSave(mood.hex, mood.key, mood.name, note.trim() || null);
   };
 
   const dateStr = date
@@ -63,7 +64,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
             <Text style={[styles.dateText, { color: isDark ? '#888' : '#666' }]}>{dateStr}</Text>
 
             <View style={styles.colorGrid}>
-              {MOOD_COLORS.map((mood) => (
+              {colors.map((mood) => (
                 <TouchableOpacity
                   key={mood.key}
                   style={styles.moodItem}

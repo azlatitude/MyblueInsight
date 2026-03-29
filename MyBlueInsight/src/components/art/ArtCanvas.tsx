@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, Rect, Path } from 'react-native-svg';
 import { MoodEntryRow } from '../../db/moodRepository';
+import { usePalette } from '../../context/PaletteContext';
+import { MoodKey } from '../../constants/palettes';
 import {
   generateWatercolor,
   generateMosaic,
@@ -18,8 +20,9 @@ interface Props {
 }
 
 export function ArtCanvas({ entries, style: artStyle, seed, size }: Props) {
+  const { getHexForKey } = usePalette();
   const elements = useMemo<SvgDescriptor[]>(() => {
-    const colorFreqs = calculateFrequencies(entries);
+    const colorFreqs = calculateFrequencies(entries, getHexForKey);
     if (colorFreqs.length === 0) return [];
     switch (artStyle) {
       case 'watercolor': return generateWatercolor(colorFreqs, seed, size);
@@ -27,7 +30,7 @@ export function ArtCanvas({ entries, style: artStyle, seed, size }: Props) {
       case 'flowField':  return generateFlowField(colorFreqs, seed, size);
       case 'nebula':     return generateNebula(colorFreqs, seed, size);
     }
-  }, [entries, artStyle, seed, size]);
+  }, [entries, artStyle, seed, size, getHexForKey]);
 
   return (
     <View style={{ width: size, height: size, borderRadius: 16, overflow: 'hidden' }}>
@@ -77,12 +80,18 @@ export function ArtCanvas({ entries, style: artStyle, seed, size }: Props) {
   );
 }
 
-function calculateFrequencies(entries: MoodEntryRow[]): { hex: string; ratio: number }[] {
+function calculateFrequencies(
+  entries: MoodEntryRow[],
+  getHexForKey: (key: MoodKey) => string
+): { hex: string; ratio: number }[] {
   if (entries.length === 0) return [];
   const counts = new Map<string, number>();
-  entries.forEach((e) => counts.set(e.color_hex, (counts.get(e.color_hex) ?? 0) + 1));
+  entries.forEach((e) => {
+    const key = e.mood_key ?? 'gray';
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  });
   const total = entries.length;
   return Array.from(counts.entries())
-    .map(([hex, count]) => ({ hex, ratio: count / total }))
+    .map(([moodKey, count]) => ({ hex: getHexForKey(moodKey as MoodKey), ratio: count / total }))
     .sort((a, b) => b.ratio - a.ratio);
 }
