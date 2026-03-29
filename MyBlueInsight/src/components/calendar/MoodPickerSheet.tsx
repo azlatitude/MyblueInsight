@@ -34,7 +34,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
   const [note, setNote] = useState(existingEntry?.note ?? '');
 
   const handleSelect = (hex: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setSelectedHex(hex);
   };
 
@@ -42,7 +42,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
     if (!selectedHex) return;
     const mood = MOOD_COLORS.find((m) => m.hex === selectedHex);
     if (!mood) return;
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     onSave(mood.hex, mood.name, note.trim() || null);
   };
 

@@ -1,9 +1,20 @@
-import * as SQLite from 'expo-sqlite';
+import { Platform } from 'react-native';
 
-let db: SQLite.SQLiteDatabase | null = null;
+let db: any = null;
 
-export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
+export async function getDatabase(): Promise<any> {
   if (db) return db;
+  if (Platform.OS === 'web') {
+    // SQLite not available on web — return a mock
+    db = {
+      getFirstAsync: async () => null,
+      getAllAsync: async () => [],
+      runAsync: async () => {},
+      execAsync: async () => {},
+    };
+    return db;
+  }
+  const SQLite = require('expo-sqlite');
   db = await SQLite.openDatabaseAsync('myblueinsight.db');
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS mood_entries (
