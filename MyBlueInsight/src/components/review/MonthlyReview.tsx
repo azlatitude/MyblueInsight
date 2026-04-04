@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { formatMonthYear, formatDateKey, getMonthDays, getFirstWeekdayOfMonth } from '../../utils/dateHelpers';
-import { useMoodDistribution, useMostCommonMood, useLongestStreak, useDiversityScore } from '../../hooks/useReviewStats';
+import { useMoodDistribution, useMostCommonMood, useLongestStreak, useDiversityScore, useExerciseInsight } from '../../hooks/useReviewStats';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,6 +28,7 @@ export function MonthlyReview({ entries }: Props) {
   const mostCommon = useMostCommonMood(monthEntries);
   const streak = useLongestStreak(monthEntries);
   const diversity = useDiversityScore(monthEntries);
+  const exerciseInsight = useExerciseInsight(monthEntries);
 
   const days = getMonthDays(year, month);
   const pad = getFirstWeekdayOfMonth(year, month);
@@ -123,6 +124,17 @@ export function MonthlyReview({ entries }: Props) {
           ))
         )}
       </View>
+
+      {exerciseInsight && (
+        <View style={[styles.card, { backgroundColor: cardBg }]}>
+          <View style={styles.insightRow}>
+            <Ionicons name="fitness-outline" size={16} color={isDark ? '#888' : '#666'} />
+            <Text style={[styles.insightText, { color: isDark ? '#ccc' : '#444' }]}>
+              {exerciseInsight}
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -146,4 +158,10 @@ const styles = StyleSheet.create({
   distBarBg: { flex: 1, height: 14, borderRadius: 3, backgroundColor: 'rgba(128,128,128,0.15)', marginHorizontal: 8, overflow: 'hidden' },
   distBar: { height: '100%', borderRadius: 3 },
   distPct: { width: 32, fontSize: 11, textAlign: 'right' },
+  insightRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  insightText: { fontSize: 13, flex: 1, lineHeight: 18 },
 });

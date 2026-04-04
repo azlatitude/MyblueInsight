@@ -19,9 +19,18 @@ import { Ionicons } from '@expo/vector-icons';
 interface Props {
   date: Date | null;
   existingEntry: MoodEntryRow | null;
-  onSave: (colorHex: string, moodKey: string, moodName: string, note: string | null) => void;
+  onSave: (colorHex: string, moodKey: string, moodName: string, note: string | null, exerciseType: string | null) => void;
   onClose: () => void;
 }
+
+const EXERCISE_TYPES = [
+  { key: 'run', icon: 'fitness-outline' as const, label: 'Run' },
+  { key: 'walk', icon: 'walk-outline' as const, label: 'Walk' },
+  { key: 'yoga', icon: 'body-outline' as const, label: 'Yoga' },
+  { key: 'gym', icon: 'barbell-outline' as const, label: 'Gym' },
+  { key: 'swim', icon: 'water-outline' as const, label: 'Swim' },
+  { key: 'bike', icon: 'bicycle-outline' as const, label: 'Bike' },
+];
 
 export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props) {
   const isDark = useColorScheme() === 'dark';
@@ -33,6 +42,9 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
     existingEntry ? colors.find((c) => c.key === existingEntry.mood_key)?.hex ?? existingEntry.color_hex : null
   );
   const [note, setNote] = useState(existingEntry?.note ?? '');
+  const [exerciseType, setExerciseType] = useState<string | null>(
+    existingEntry?.exercise_type ?? null
+  );
 
   const handleSelect = (hex: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -44,7 +56,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
     const mood = colors.find((m) => m.hex === selectedHex);
     if (!mood) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    onSave(mood.hex, mood.key, mood.name, note.trim() || null);
+    onSave(mood.hex, mood.key, mood.name, note.trim() || null, exerciseType);
   };
 
   const dateStr = date
@@ -111,6 +123,47 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
             <Text style={[styles.charCount, { color: isDark ? '#555' : '#aaa' }]}>
               {note.length}/280
             </Text>
+
+            <Text style={[styles.noteLabel, { color: isDark ? '#888' : '#666' }]}>
+              Exercise (optional)
+            </Text>
+            <View style={styles.exerciseRow}>
+              {EXERCISE_TYPES.map((ex) => {
+                const isActive = exerciseType === ex.key;
+                return (
+                  <TouchableOpacity
+                    key={ex.key}
+                    style={[
+                      styles.exerciseItem,
+                      {
+                        backgroundColor: isActive
+                          ? (isDark ? '#007AFF' : '#007AFF')
+                          : (isDark ? '#2c2c2e' : '#f0f0f0'),
+                      },
+                    ]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      setExerciseType(isActive ? null : ex.key);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons
+                      name={ex.icon}
+                      size={18}
+                      color={isActive ? '#fff' : (isDark ? '#aaa' : '#666')}
+                    />
+                    <Text
+                      style={[
+                        styles.exerciseLabel,
+                        { color: isActive ? '#fff' : (isDark ? '#aaa' : '#666') },
+                      ]}
+                    >
+                      {ex.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
             <TouchableOpacity
               style={[styles.saveBtn, !selectedHex && styles.saveBtnDisabled]}
@@ -183,6 +236,21 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   charCount: { fontSize: 11, textAlign: 'right', marginTop: 4 },
+  exerciseRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  exerciseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
+  },
+  exerciseLabel: { fontSize: 11, fontWeight: '600' },
   saveBtn: {
     backgroundColor: '#007AFF',
     borderRadius: 12,

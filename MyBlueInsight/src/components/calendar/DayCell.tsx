@@ -41,6 +41,9 @@ export function DayCell({ date, entry, onPress }: Props) {
       activeOpacity={0.7}
     >
       <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      {entry?.exercise_type && (
+        <View style={[styles.exerciseDot, { borderColor: displayHex ?? 'transparent' }]} />
+      )}
     </TouchableOpacity>
   );
 }
@@ -53,4 +56,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayText: { fontSize: 14, fontWeight: '600' },
+  exerciseDot: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+  },
 });

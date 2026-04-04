@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { getWeekRange, formatDateKey, formatDateRange } from '../../utils/dateHelpers';
-import { useMoodDistribution } from '../../hooks/useReviewStats';
+import { useMoodDistribution, useExerciseInsight } from '../../hooks/useReviewStats';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +25,7 @@ export function WeeklyReview({ entries }: Props) {
   }, [entries, start, end]);
 
   const distribution = useMoodDistribution(weekEntries);
+  const exerciseInsight = useExerciseInsight(weekEntries);
 
   const weekDays = useMemo(() => {
     const days: Date[] = [];
@@ -65,12 +66,19 @@ export function WeeklyReview({ entries }: Props) {
             const entry = entries.find((e) => e.date === key);
             return (
               <View key={i} style={styles.stripDay}>
-                <View
-                  style={[
-                    styles.circle,
-                    { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
-                  ]}
-                />
+                <View style={{ position: 'relative' }}>
+                  <View
+                    style={[
+                      styles.circle,
+                      { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
+                    ]}
+                  />
+                  {entry?.exercise_type && (
+                    <View style={styles.exerciseBadge}>
+                      <Ionicons name="fitness-outline" size={10} color="#fff" />
+                    </View>
+                  )}
+                </View>
                 <Text style={[styles.dayLabel, { color: isDark ? '#888' : '#666' }]}>
                   {dayLabels[i]}
                 </Text>
@@ -105,6 +113,17 @@ export function WeeklyReview({ entries }: Props) {
           ))
         )}
       </View>
+
+      {exerciseInsight && (
+        <View style={[styles.card, { backgroundColor: cardBg }]}>
+          <View style={styles.insightRow}>
+            <Ionicons name="fitness-outline" size={16} color={isDark ? '#888' : '#666'} />
+            <Text style={[styles.insightText, { color: isDark ? '#ccc' : '#444' }]}>
+              {exerciseInsight}
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -136,4 +155,21 @@ const styles = StyleSheet.create({
   },
   distBar: { height: '100%', borderRadius: 3 },
   distPct: { width: 32, fontSize: 11, textAlign: 'right' },
+  exerciseBadge: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#007AFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  insightRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  insightText: { fontSize: 13, flex: 1, lineHeight: 18 },
 });

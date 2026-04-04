@@ -89,3 +89,38 @@ export function useDiversityScore(entries: MoodEntryRow[]): number {
     return Math.round((unique.size / colors.length) * 100);
   }, [entries, colors]);
 }
+
+export function useExerciseInsight(entries: MoodEntryRow[]): string | null {
+  const { colors } = usePalette();
+  return useMemo(() => {
+    const exerciseDays = entries.filter((e) => e.exercise_type);
+    const restDays = entries.filter((e) => !e.exercise_type);
+    if (exerciseDays.length < 3) return null;
+
+    const topMood = (list: MoodEntryRow[]) => {
+      if (list.length === 0) return null;
+      const counts = new Map<string, number>();
+      list.forEach((e) => {
+        const key = e.mood_key ?? 'gray';
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      });
+      let maxKey = '';
+      let maxCount = 0;
+      counts.forEach((count, key) => {
+        if (count > maxCount) { maxCount = count; maxKey = key; }
+      });
+      const mood = colors.find((c) => c.key === maxKey);
+      const pct = Math.round((maxCount / list.length) * 100);
+      return mood ? { name: mood.name.split(' / ')[0], pct } : null;
+    };
+
+    const exMood = topMood(exerciseDays);
+    const restMood = topMood(restDays);
+    if (!exMood) return null;
+
+    if (restMood && restDays.length >= 3) {
+      return `On exercise days, your top mood is ${exMood.name} (${exMood.pct}%). On rest days, it's ${restMood.name} (${restMood.pct}%).`;
+    }
+    return `On exercise days, your top mood is ${exMood.name} (${exMood.pct}%).`;
+  }, [entries, colors]);
+}

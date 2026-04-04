@@ -7,6 +7,7 @@ export interface MoodEntryRow {
   mood_key: string;
   mood_name: string;
   note: string | null;
+  exercise_type: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -46,7 +47,8 @@ export async function saveMood(
   colorHex: string,
   moodKey: string,
   moodName: string,
-  note: string | null
+  note: string | null,
+  exerciseType: string | null
 ): Promise<void> {
   const db = await getDatabase();
   const now = new Date().toISOString();
@@ -54,13 +56,13 @@ export async function saveMood(
 
   if (existing) {
     await db.runAsync(
-      'UPDATE mood_entries SET color_hex = ?, mood_key = ?, mood_name = ?, note = ?, updated_at = ? WHERE date = ?',
-      [colorHex, moodKey, moodName, note, now, date]
+      'UPDATE mood_entries SET color_hex = ?, mood_key = ?, mood_name = ?, note = ?, exercise_type = ?, updated_at = ? WHERE date = ?',
+      [colorHex, moodKey, moodName, note, exerciseType, now, date]
     );
   } else {
     await db.runAsync(
-      'INSERT INTO mood_entries (id, date, color_hex, mood_key, mood_name, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [generateId(), date, colorHex, moodKey, moodName, note, now, now]
+      'INSERT INTO mood_entries (id, date, color_hex, mood_key, mood_name, note, exercise_type, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [generateId(), date, colorHex, moodKey, moodName, note, exerciseType, now, now]
     );
   }
 }

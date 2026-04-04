@@ -43,9 +43,9 @@ export default function CalendarScreen() {
   }, []);
 
   const handleSave = useCallback(
-    async (colorHex: string, moodKey: string, moodName: string, note: string | null) => {
+    async (colorHex: string, moodKey: string, moodName: string, note: string | null, exerciseType: string | null) => {
       if (selectedDate) {
-        await save(selectedDate, colorHex, moodKey, moodName, note);
+        await save(selectedDate, colorHex, moodKey, moodName, note, exerciseType);
       }
       setShowPicker(false);
     },

@@ -47,6 +47,13 @@ export async function getDatabase(): Promise<any> {
     // Column already exists
   }
 
+  // Add exercise_type column if missing
+  try {
+    await db.runAsync('ALTER TABLE mood_entries ADD COLUMN exercise_type TEXT');
+  } catch {
+    // Column already exists
+  }
+
   // Backfill mood_key for rows where it is NULL
   const CLASSIC_MAP: Record<string, string> = {
     '#FF3B30': 'red', '#FF9500': 'orange', '#FFCC00': 'yellow',
