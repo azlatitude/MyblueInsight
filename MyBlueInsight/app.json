@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myblueinsight",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "splash": {
@@ -12,6 +13,7 @@
     },
     "ios": {
       "supportsTablet": false,
+      "icon": "./assets/icon.png",
       "bundleIdentifier": "com.myblueinsight.app",
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "MyBlueInsight saves your mood art to Photos"

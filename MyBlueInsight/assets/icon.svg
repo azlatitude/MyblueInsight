@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90D9"/>
+      <stop offset="50%" style="stop-color:#357ABD"/>
+      <stop offset="100%" style="stop-color:#1a5276"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.15)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="220" ry="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" ry="220" fill="url(#glow)"/>
+
+  <!-- Heart -->
+  <g transform="translate(512, 460) scale(1.1)">
+    <path d="M0,128
+      C0,80 -40,50 -80,-10
+      C-160,-100 -240,-80 -240,-10
+      C-240,60 -160,140 0,260
+      C160,140 240,60 240,-10
+      C240,-80 160,-100 80,-10
+      C40,50 0,80 0,128Z"
+      fill="rgba(255,255,255,0.95)"
+      filter="drop-shadow(0 8px 20px rgba(0,0,0,0.2))"/>
+  </g>
+
+  <!-- Left eye -->
+  <circle cx="462" cy="410" r="14" fill="#357ABD"/>
+  <!-- Right eye -->
+  <circle cx="562" cy="410" r="14" fill="#357ABD"/>
+
+  <!-- Smile -->
+  <path d="M465,460 Q512,510 559,460" stroke="#357ABD" stroke-width="10" fill="none" stroke-linecap="round"/>
+</svg>
