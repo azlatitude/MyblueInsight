@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useMoods } from '../../src/hooks/useMoods';
 import { WeeklyReview } from '../../src/components/review/WeeklyReview';
 import { MonthlyReview } from '../../src/components/review/MonthlyReview';
@@ -17,8 +18,14 @@ type Period = 'Week' | 'Month' | 'Year';
 
 export default function ReviewScreen() {
   const isDark = useColorScheme() === 'dark';
-  const { entries } = useMoods();
+  const { entries, refresh } = useMoods();
   const [period, setPeriod] = useState<Period>('Month');
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   const textColor = isDark ? '#fff' : '#000';
   const bg = isDark ? '#000' : '#fff';

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useMoods } from '../../src/hooks/useMoods';
 import { ArtStyleCard } from '../../src/components/art/ArtStyleCard';
 import { ArtCanvas } from '../../src/components/art/ArtCanvas';
@@ -25,7 +26,7 @@ type ArtStyleType = 'watercolor' | 'mosaic' | 'flowField' | 'nebula';
 const ART_STYLES: { key: ArtStyleType; title: string; subtitle: string }[] = [
   { key: 'watercolor', title: 'Watercolor Blend', subtitle: 'Soft flowing colors' },
   { key: 'mosaic', title: 'Geometric Mosaic', subtitle: 'Crisp colored cells' },
-  { key: 'flowField', title: 'Flow Field', subtitle: 'Particle trail lines' },
+  { key: 'flowField', title: 'Fractal Tree', subtitle: 'Branching color patterns' },
   { key: 'nebula', title: 'Nebula', subtitle: 'Cosmic clouds & stars' },
 ];
 
@@ -36,8 +37,14 @@ export default function ArtScreen() {
   const segBg = isDark ? '#1c1c1e' : '#f2f2f7';
   const segActive = isDark ? '#333' : '#fff';
 
-  const { entries } = useMoods();
+  const { entries, refresh } = useMoods();
   const [period, setPeriod] = useState<Period>('Month');
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
   const [style, setStyle] = useState<ArtStyleType>('watercolor');
   const [seed, setSeed] = useState(Date.now());
   const [generated, setGenerated] = useState(false);

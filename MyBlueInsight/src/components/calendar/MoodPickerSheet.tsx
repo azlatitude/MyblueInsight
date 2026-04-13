@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,7 @@ const EXERCISE_TYPES = [
   { key: 'gym', icon: 'barbell-outline' as const, label: 'Gym' },
   { key: 'swim', icon: 'water-outline' as const, label: 'Swim' },
   { key: 'bike', icon: 'bicycle-outline' as const, label: 'Bike' },
+  { key: 'stairs', icon: 'trending-up-outline' as const, label: 'Stairs' },
 ];
 
 export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props) {
@@ -37,6 +38,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
   const bg = isDark ? '#1c1c1e' : '#fff';
   const textColor = isDark ? '#fff' : '#000';
   const { colors } = usePalette();
+  const scrollRef = useRef<ScrollView>(null);
 
   const [selectedHex, setSelectedHex] = useState<string | null>(
     existingEntry ? colors.find((c) => c.key === existingEntry.mood_key)?.hex ?? existingEntry.color_hex : null
@@ -70,7 +72,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
         style={styles.keyboardView}
       >
         <Pressable style={[styles.sheet, { backgroundColor: bg }]} onPress={(e) => e.stopPropagation()}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
             <View style={styles.handle} />
             <Text style={[styles.title, { color: textColor }]}>How are you feeling?</Text>
             <Text style={[styles.dateText, { color: isDark ? '#888' : '#666' }]}>{dateStr}</Text>
@@ -144,6 +146,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
                       setExerciseType(isActive ? null : ex.key);
+                      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
                     }}
                     activeOpacity={0.7}
                   >

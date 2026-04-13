@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
 import { PaintingMatch } from '../../services/paintingMatcher';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
+import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
   match: PaintingMatch;
@@ -42,6 +43,29 @@ export function PaintingCard({ match }: Props) {
       <Text style={[styles.artist, { color: subtextColor }]}>
         {painting.artistZh} ({painting.artist}), {painting.year}
       </Text>
+
+      <View style={styles.linkRow}>
+        <TouchableOpacity
+          style={[styles.linkBtn, { backgroundColor: isDark ? '#2c2c2e' : '#e8e8ed' }]}
+          onPress={() => {
+            const q = encodeURIComponent(`${painting.title} ${painting.artist} painting`);
+            Linking.openURL(`https://www.google.com/search?tbm=isch&q=${q}`);
+          }}
+        >
+          <Ionicons name="image-outline" size={14} color={textColor} />
+          <Text style={[styles.linkText, { color: textColor }]}>View Image</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.linkBtn, { backgroundColor: isDark ? '#2c2c2e' : '#e8e8ed' }]}
+          onPress={() => {
+            const q = encodeURIComponent(`${painting.title} ${painting.artist}`);
+            Linking.openURL(`https://en.wikipedia.org/w/index.php?search=${q}`);
+          }}
+        >
+          <Ionicons name="book-outline" size={14} color={textColor} />
+          <Text style={[styles.linkText, { color: textColor }]}>Wikipedia</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.colorStrip}>
         {profileEntries.map(([key, weight]) => (
@@ -102,6 +126,23 @@ const styles = StyleSheet.create({
   artist: {
     fontSize: 12,
     marginTop: 4,
+  },
+  linkRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  linkBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 14,
+    gap: 4,
+  },
+  linkText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   colorStrip: {
     flexDirection: 'row',

@@ -178,69 +178,64 @@ export function generateFlowField(freqs: ColorFreq[], seed: number, size: number
   const rand = mulberry32(seed);
   const elements: SvgDescriptor[] = [];
 
-  // Light background
-  elements.push({ type: 'rect', x: 0, y: 0, width: size, height: size, fill: '#F4F4F8', opacity: 1 });
+  // Soft warm background
+  elements.push({ type: 'rect', x: 0, y: 0, width: size, height: size, fill: '#FAFAF5', opacity: 1 });
 
-  // Build a simple sinusoidal angle field
-  const gridSize = 24;
-  const scale = size / gridSize;
-  const freq = rand() * 3 + 2;
-  const field: number[][] = [];
-  for (let r = 0; r <= gridSize; r++) {
-    field[r] = [];
-    for (let c = 0; c <= gridSize; c++) {
-      const nx = c / gridSize;
-      const ny = r / gridSize;
-      field[r][c] =
-        Math.sin(nx * freq * Math.PI) * Math.cos(ny * freq * Math.PI) * Math.PI * 2 +
-        rand() * 0.5;
+  // Recursive fractal tree using mood colors
+  function branch(x: number, y: number, angle: number, length: number, depth: number, thickness: number) {
+    if (depth <= 0 || length < 2) return;
+
+    const endX = x + Math.cos(angle) * length;
+    const endY = y + Math.sin(angle) * length;
+    const color = weightedColor(freqs, rand);
+    const opacity = 0.4 + depth * 0.06;
+
+    elements.push({
+      type: 'path',
+      d: `M ${x.toFixed(1)} ${y.toFixed(1)} L ${endX.toFixed(1)} ${endY.toFixed(1)}`,
+      stroke: color,
+      strokeWidth: thickness,
+      opacity: Math.min(opacity, 0.9),
+    });
+
+    // Add leaf circles at terminal branches
+    if (depth <= 2) {
+      const leafColor = weightedColor(freqs, rand);
+      elements.push({
+        type: 'circle',
+        cx: endX,
+        cy: endY,
+        r: rand() * 4 + 2,
+        fill: rgba(leafColor, rand() * 0.4 + 0.2),
+        opacity: 1,
+      });
+    }
+
+    const branchCount = depth > 4 ? 2 : (rand() > 0.3 ? 3 : 2);
+    const spread = rand() * 0.5 + 0.3;
+    const shrink = rand() * 0.15 + 0.6;
+
+    for (let i = 0; i < branchCount; i++) {
+      const offsetAngle = (i - (branchCount - 1) / 2) * spread + (rand() - 0.5) * 0.2;
+      branch(
+        endX, endY,
+        angle + offsetAngle,
+        length * shrink,
+        depth - 1,
+        Math.max(thickness * 0.65, 0.5),
+      );
     }
   }
 
-  // Trace particle paths and emit SVG path descriptors
-  const particleCount = 400;
-  const steps = 40;
-  const stepLen = size / 120;
-
-  for (let p = 0; p < particleCount; p++) {
-    const color = weightedColor(freqs, rand);
-    const opacity = rand() * 0.35 + 0.1;
-    const strokeWidth = rand() * 1.8 + 0.4;
-
-    let x = rand() * size;
-    let y = rand() * size;
-    const pts: { x: number; y: number }[] = [{ x, y }];
-
-    for (let s = 0; s < steps; s++) {
-      const col = Math.floor(x / scale);
-      const row = Math.floor(y / scale);
-      if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) break;
-      const angle = field[row][col];
-      x += Math.cos(angle) * stepLen;
-      y += Math.sin(angle) * stepLen;
-      if (x < 0 || x >= size || y < 0 || y >= size) break;
-      pts.push({ x, y });
-    }
-
-    if (pts.length > 1) {
-      // Build a smooth cubic bezier path through the points
-      let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-      for (let j = 1; j < pts.length; j++) {
-        const prev = pts[j - 1];
-        const curr = pts[j];
-        const cpx = (prev.x + curr.x) / 2;
-        const cpy = (prev.y + curr.y) / 2;
-        d += ` Q ${prev.x.toFixed(1)} ${prev.y.toFixed(1)} ${cpx.toFixed(1)} ${cpy.toFixed(1)}`;
-      }
-
-      elements.push({
-        type: 'path',
-        d,
-        stroke: color,
-        strokeWidth,
-        opacity,
-      });
-    }
+  // Plant multiple fractal trees from bottom
+  const treeCount = 3 + Math.floor(rand() * 3);
+  for (let t = 0; t < treeCount; t++) {
+    const startX = size * (0.15 + rand() * 0.7);
+    const startY = size * (0.85 + rand() * 0.1);
+    const angle = -Math.PI / 2 + (rand() - 0.5) * 0.4;
+    const trunkLength = size * (0.12 + rand() * 0.08);
+    const maxDepth = 6 + Math.floor(rand() * 3);
+    branch(startX, startY, angle, trunkLength, maxDepth, 3 + rand() * 2);
   }
 
   return elements;
