@@ -30,9 +30,7 @@ export async function exportData(): Promise<void> {
   const fileName = `MyBlueInsight_backup_${date}.json`;
   const filePath = `${FileSystem.cacheDirectory}${fileName}`;
 
-  await FileSystem.writeAsStringAsync(filePath, json, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
+  await FileSystem.writeAsStringAsync(filePath, json);
 
   await Sharing.shareAsync(filePath, {
     mimeType: 'application/json',
@@ -52,9 +50,7 @@ export async function importData(): Promise<{ imported: number; skipped: number 
   }
 
   const fileUri = result.assets[0].uri;
-  const json = await FileSystem.readAsStringAsync(fileUri, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
+  const json = await FileSystem.readAsStringAsync(fileUri);
 
   const backup: BackupData = JSON.parse(json);
 
