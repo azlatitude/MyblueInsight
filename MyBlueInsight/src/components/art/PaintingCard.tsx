@@ -43,13 +43,10 @@ export function PaintingCard({ match }: Props) {
       )}
 
       <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
-        {painting.titleZh || painting.title}
-      </Text>
-      <Text style={[styles.titleEn, { color: subtextColor }]} numberOfLines={1}>
         {painting.title}
       </Text>
       <Text style={[styles.artist, { color: subtextColor }]}>
-        {painting.artistZh} ({painting.artist}), {painting.year}
+        {painting.artist}, {painting.year}
       </Text>
 
       <View style={styles.linkRow}>
@@ -128,15 +125,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
-    lineHeight: 28,
-  },
-  titleEn: {
-    fontSize: 14,
-    fontWeight: '500',
-    fontStyle: 'italic',
-    marginTop: 2,
+    lineHeight: 26,
   },
   artist: {
     fontSize: 12,
