@@ -9,7 +9,8 @@ export type MoodKey =
   | 'pink'
   | 'gray'
   | 'black'
-  | 'gold';
+  | 'gold'
+  | 'teal';
 
 export interface PaletteMoodColor {
   key: MoodKey;
@@ -40,9 +41,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#007AFF', name: 'Sad / Blue' },
       { key: 'purple', hex: '#AF52DE', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#FF6B9D', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#8E8E93', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#C2B8A3', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#1C1C1E', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#DAA520', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#2AAFAF', name: 'Relaxed / Leisure' },
     ],
   },
   {
@@ -59,9 +61,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#9BB8D3', name: 'Sad / Blue' },
       { key: 'purple', hex: '#D4B8E0', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#F5C2D0', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#D5D5DA', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#D9CEBD', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#A6A6B0', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#E8C97A', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#8DD4C8', name: 'Relaxed / Leisure' },
     ],
   },
   {
@@ -78,9 +81,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#7A8FA0', name: 'Sad / Blue' },
       { key: 'purple', hex: '#A896A5', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#C9A5A0', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#B5B0A8', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#C5B9A8', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#6B6560', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#B8A070', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#8AADA5', name: 'Relaxed / Leisure' },
     ],
   },
   {
@@ -97,9 +101,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#6B8DAE', name: 'Sad / Blue' },
       { key: 'purple', hex: '#9C88B8', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#D4A0B0', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#A8B5BE', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#C4BAA8', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#4A5568', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#C4A66A', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#7EC8B8', name: 'Relaxed / Leisure' },
     ],
   },
   {
@@ -116,9 +121,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#1B4F72', name: 'Sad / Blue' },
       { key: 'purple', hex: '#7B3FA0', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#E05A8D', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#8C7B6B', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#A89880', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#2C1810', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#D4A843', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#1A9E8F', name: 'Relaxed / Leisure' },
     ],
   },
   {
@@ -135,9 +141,10 @@ export const PALETTES: Palette[] = [
       { key: 'darkBlue', hex: '#1A4B8C', name: 'Sad / Blue' },
       { key: 'purple', hex: '#805AD5', name: 'Creative / Inspired' },
       { key: 'pink', hex: '#ED64A6', name: 'Loving / Grateful' },
-      { key: 'gray', hex: '#718096', name: 'Neutral / Indifferent' },
+      { key: 'gray', hex: '#B5A68E', name: 'Neutral / Indifferent' },
       { key: 'black', hex: '#1A202C', name: 'Exhausted / Drained' },
       { key: 'gold', hex: '#D69E2E', name: 'Accomplished / Proud' },
+      { key: 'teal', hex: '#319795', name: 'Relaxed / Leisure' },
     ],
   },
 ];

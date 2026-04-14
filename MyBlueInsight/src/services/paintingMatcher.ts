@@ -4,7 +4,7 @@ import { MoodEntryRow } from '../db/moodRepository';
 
 const ALL_KEYS: MoodKey[] = [
   'red', 'orange', 'yellow', 'green', 'lightBlue',
-  'darkBlue', 'purple', 'pink', 'gray', 'black', 'gold',
+  'darkBlue', 'purple', 'pink', 'gray', 'black', 'gold', 'teal',
 ];
 
 function toVector(profile: Partial<Record<MoodKey, number>>): number[] {

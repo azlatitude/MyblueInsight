@@ -62,7 +62,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
   };
 
   const dateStr = date
-    ? date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+    ? date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
     : '';
 
   return (
@@ -72,7 +72,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
         style={styles.keyboardView}
       >
         <Pressable style={[styles.sheet, { backgroundColor: bg }]} onPress={(e) => e.stopPropagation()}>
-          <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
+          <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} style={styles.scrollBody}>
             <View style={styles.handle} />
             <Text style={[styles.title, { color: textColor }]}>How are you feeling?</Text>
             <Text style={[styles.dateText, { color: isDark ? '#888' : '#666' }]}>{dateStr}</Text>
@@ -93,7 +93,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                     ]}
                   >
                     {selectedHex === mood.hex && (
-                      <Ionicons name="checkmark" size={20} color="#fff" />
+                      <Ionicons name="checkmark" size={16} color="#fff" />
                     )}
                   </View>
                   <Text style={[styles.moodLabel, { color: textColor }]} numberOfLines={1}>
@@ -103,32 +103,29 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
               ))}
             </View>
 
-            <Text style={[styles.noteLabel, { color: isDark ? '#888' : '#666' }]}>
-              Note (optional)
-            </Text>
-            <TextInput
-              style={[
-                styles.noteInput,
-                {
-                  color: textColor,
-                  borderColor: isDark ? '#333' : '#ddd',
-                  backgroundColor: isDark ? '#2c2c2e' : '#f5f5f5',
-                },
-              ]}
-              placeholder="How was your day?"
-              placeholderTextColor={isDark ? '#555' : '#aaa'}
-              value={note}
-              onChangeText={(t) => setNote(t.slice(0, 280))}
-              multiline
-              maxLength={280}
-            />
-            <Text style={[styles.charCount, { color: isDark ? '#555' : '#aaa' }]}>
-              {note.length}/280
-            </Text>
+            <View style={styles.row}>
+              <View style={styles.noteSection}>
+                <Text style={[styles.sectionLabel, { color: isDark ? '#888' : '#666' }]}>Note</Text>
+                <TextInput
+                  style={[
+                    styles.noteInput,
+                    {
+                      color: textColor,
+                      borderColor: isDark ? '#333' : '#ddd',
+                      backgroundColor: isDark ? '#2c2c2e' : '#f5f5f5',
+                    },
+                  ]}
+                  placeholder="How was your day?"
+                  placeholderTextColor={isDark ? '#555' : '#aaa'}
+                  value={note}
+                  onChangeText={(t) => setNote(t.slice(0, 280))}
+                  multiline
+                  maxLength={280}
+                />
+              </View>
+            </View>
 
-            <Text style={[styles.noteLabel, { color: isDark ? '#888' : '#666' }]}>
-              Exercise (optional)
-            </Text>
+            <Text style={[styles.sectionLabel, { color: isDark ? '#888' : '#666' }]}>Exercise</Text>
             <View style={styles.exerciseRow}>
               {EXERCISE_TYPES.map((ex) => {
                 const isActive = exerciseType === ex.key;
@@ -139,20 +136,19 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                       styles.exerciseItem,
                       {
                         backgroundColor: isActive
-                          ? (isDark ? '#007AFF' : '#007AFF')
+                          ? '#007AFF'
                           : (isDark ? '#2c2c2e' : '#f0f0f0'),
                       },
                     ]}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
                       setExerciseType(isActive ? null : ex.key);
-                      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
                     }}
                     activeOpacity={0.7}
                   >
                     <Ionicons
                       name={ex.icon}
-                      size={18}
+                      size={16}
                       color={isActive ? '#fff' : (isDark ? '#aaa' : '#666')}
                     />
                     <Text
@@ -167,16 +163,17 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                 );
               })}
             </View>
-
-            <TouchableOpacity
-              style={[styles.saveBtn, !selectedHex && styles.saveBtnDisabled]}
-              onPress={handleSave}
-              disabled={!selectedHex}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.saveBtnText}>Save</Text>
-            </TouchableOpacity>
           </ScrollView>
+
+          {/* Save button always visible at bottom */}
+          <TouchableOpacity
+            style={[styles.saveBtn, !selectedHex && styles.saveBtnDisabled]}
+            onPress={handleSave}
+            disabled={!selectedHex}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.saveBtnText}>Save</Text>
+          </TouchableOpacity>
         </Pressable>
       </KeyboardAvoidingView>
     </Pressable>
@@ -193,29 +190,31 @@ const styles = StyleSheet.create({
   sheet: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 20,
     maxHeight: '85%',
   },
+  scrollBody: { flexGrow: 0 },
   handle: {
     width: 40,
     height: 5,
     borderRadius: 3,
     backgroundColor: '#ccc',
     alignSelf: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
-  title: { fontSize: 20, fontWeight: '700', textAlign: 'center' },
-  dateText: { fontSize: 14, textAlign: 'center', marginTop: 4, marginBottom: 20 },
+  title: { fontSize: 18, fontWeight: '700', textAlign: 'center' },
+  dateText: { fontSize: 13, textAlign: 'center', marginTop: 2, marginBottom: 14 },
   colorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
   },
-  moodItem: { width: '20%', alignItems: 'center', marginBottom: 16 },
+  moodItem: { width: '25%', alignItems: 'center', marginBottom: 12 },
   colorCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -228,39 +227,40 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  moodLabel: { fontSize: 10, marginTop: 4, textAlign: 'center' },
-  noteLabel: { fontSize: 13, fontWeight: '600', marginTop: 8, marginBottom: 6 },
+  moodLabel: { fontSize: 9, marginTop: 3, textAlign: 'center' },
+  row: { flexDirection: 'row', gap: 10 },
+  noteSection: { flex: 1 },
+  sectionLabel: { fontSize: 12, fontWeight: '600', marginTop: 4, marginBottom: 4 },
   noteInput: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 14,
-    minHeight: 60,
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 13,
+    minHeight: 44,
     textAlignVertical: 'top',
   },
-  charCount: { fontSize: 11, textAlign: 'right', marginTop: 4 },
   exerciseRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 8,
+    gap: 6,
+    marginBottom: 4,
   },
   exerciseItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 16,
-    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 14,
+    gap: 3,
   },
-  exerciseLabel: { fontSize: 11, fontWeight: '600' },
+  exerciseLabel: { fontSize: 10, fontWeight: '600' },
   saveBtn: {
     backgroundColor: '#007AFF',
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 10,
   },
   saveBtnDisabled: { opacity: 0.4 },
-  saveBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  saveBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
