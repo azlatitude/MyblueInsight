@@ -39,6 +39,7 @@ export default function ArtScreen() {
 
   const { entries, refresh } = useMoods();
   const [period, setPeriod] = useState<Period>('Month');
+  const [viewDate, setViewDate] = useState(new Date());
 
   useFocusEffect(
     useCallback(() => {
@@ -51,26 +52,55 @@ export default function ArtScreen() {
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<any>(null);
 
-  const filteredEntries = getEntriesForPeriod(entries, period);
+  const filteredEntries = getEntriesForPeriod(entries, period, viewDate);
   const paintingMatch = useMemo(() => findMatchingPainting(filteredEntries), [filteredEntries]);
 
-  function getEntriesForPeriod(allEntries: MoodEntryRow[], p: Period): MoodEntryRow[] {
-    const now = new Date();
+  function getEntriesForPeriod(allEntries: MoodEntryRow[], p: Period, refDate: Date): MoodEntryRow[] {
     if (p === 'Week') {
-      const { start, end } = getWeekRange(now);
+      const { start, end } = getWeekRange(refDate);
       const s = formatDateKey(start);
       const e = formatDateKey(end);
       return allEntries.filter((entry) => entry.date >= s && entry.date <= e);
     } else if (p === 'Month') {
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+      const y = refDate.getFullYear();
+      const m = String(refDate.getMonth() + 1).padStart(2, '0');
+      const lastDay = new Date(y, refDate.getMonth() + 1, 0).getDate();
       return allEntries.filter((e) => e.date >= `${y}-${m}-01` && e.date <= `${y}-${m}-${lastDay}`);
     } else {
-      const y = String(now.getFullYear());
+      const y = String(refDate.getFullYear());
       return allEntries.filter((e) => e.date.startsWith(y));
     }
   }
+
+  const navigateBack = () => {
+    const d = new Date(viewDate);
+    if (period === 'Week') d.setDate(d.getDate() - 7);
+    else if (period === 'Month') d.setMonth(d.getMonth() - 1);
+    else d.setFullYear(d.getFullYear() - 1);
+    setViewDate(d);
+    setGenerated(false);
+  };
+
+  const navigateForward = () => {
+    const d = new Date(viewDate);
+    if (period === 'Week') d.setDate(d.getDate() + 7);
+    else if (period === 'Month') d.setMonth(d.getMonth() + 1);
+    else d.setFullYear(d.getFullYear() + 1);
+    setViewDate(d);
+    setGenerated(false);
+  };
+
+  const getPeriodLabel = (): string => {
+    if (period === 'Week') {
+      const { start, end } = getWeekRange(viewDate);
+      const fmt = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}`;
+      return `${fmt(start)} - ${fmt(end)}`;
+    } else if (period === 'Month') {
+      return `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, '0')}`;
+    } else {
+      return `${viewDate.getFullYear()}`;
+    }
+  };
 
   const handleGenerate = () => {
     setSeed(Date.now());
@@ -101,6 +131,16 @@ export default function ArtScreen() {
               <Text style={[styles.segmentText, { color: period === p ? textColor : '#8E8E93' }]}>{p}</Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        <View style={styles.periodNav}>
+          <TouchableOpacity onPress={navigateBack} style={styles.periodNavBtn}>
+            <Ionicons name="chevron-back" size={20} color={textColor} />
+          </TouchableOpacity>
+          <Text style={[styles.periodLabel, { color: textColor }]}>{getPeriodLabel()}</Text>
+          <TouchableOpacity onPress={navigateForward} style={styles.periodNavBtn}>
+            <Ionicons name="chevron-forward" size={20} color={textColor} />
+          </TouchableOpacity>
         </View>
 
         <Text style={[styles.label, { color: isDark ? '#888' : '#666' }]}>Art Style</Text>
@@ -195,6 +235,15 @@ const styles = StyleSheet.create({
   segment: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
   segmentActive: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
   segmentText: { fontSize: 14, fontWeight: '600' },
+  periodNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    gap: 12,
+  },
+  periodNavBtn: { padding: 6 },
+  periodLabel: { fontSize: 15, fontWeight: '600', minWidth: 120, textAlign: 'center' },
   styleScroll: { paddingHorizontal: 12 },
   generateBtn: {
     backgroundColor: '#007AFF',

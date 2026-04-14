@@ -1,6 +1,6 @@
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
-import * as DocumentPicker from 'expo-document-picker';
+import { cacheDirectory, writeAsStringAsync, readAsStringAsync } from 'expo-file-system';
+import { shareAsync } from 'expo-sharing';
+import { getDocumentAsync } from 'expo-document-picker';
 import { getAllMoods, saveMood, MoodEntryRow } from '../db/moodRepository';
 import { getDatabase } from '../db/database';
 
@@ -28,11 +28,11 @@ export async function exportData(): Promise<void> {
   const json = JSON.stringify(backup, null, 2);
   const date = new Date().toISOString().slice(0, 10);
   const fileName = `MyBlueInsight_backup_${date}.json`;
-  const filePath = `${FileSystem.cacheDirectory}${fileName}`;
+  const filePath = `${cacheDirectory}${fileName}`;
 
-  await FileSystem.writeAsStringAsync(filePath, json);
+  await writeAsStringAsync(filePath, json);
 
-  await Sharing.shareAsync(filePath, {
+  await shareAsync(filePath, {
     mimeType: 'application/json',
     dialogTitle: 'Export Mood Data',
     UTI: 'public.json',
@@ -40,7 +40,7 @@ export async function exportData(): Promise<void> {
 }
 
 export async function importData(): Promise<{ imported: number; skipped: number }> {
-  const result = await DocumentPicker.getDocumentAsync({
+  const result = await getDocumentAsync({
     type: 'application/json',
     copyToCacheDirectory: true,
   });
@@ -50,7 +50,7 @@ export async function importData(): Promise<{ imported: number; skipped: number 
   }
 
   const fileUri = result.assets[0].uri;
-  const json = await FileSystem.readAsStringAsync(fileUri);
+  const json = await readAsStringAsync(fileUri);
 
   const backup: BackupData = JSON.parse(json);
 
