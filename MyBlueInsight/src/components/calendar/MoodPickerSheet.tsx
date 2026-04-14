@@ -93,7 +93,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                     ]}
                   >
                     {selectedHex === mood.hex && (
-                      <Ionicons name="checkmark" size={16} color="#fff" />
+                      <Ionicons name="checkmark" size={14} color="#fff" />
                     )}
                   </View>
                   <Text style={[styles.moodLabel, { color: textColor }]} numberOfLines={1}>
@@ -210,11 +210,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  moodItem: { width: '25%', alignItems: 'center', marginBottom: 12 },
+  moodItem: { width: '16.66%', alignItems: 'center', marginBottom: 10 },
   colorCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
