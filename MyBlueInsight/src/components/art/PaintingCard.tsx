@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
 import { PaintingMatch } from '../../services/paintingMatcher';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
@@ -34,8 +34,16 @@ export function PaintingCard({ match }: Props) {
         </View>
       </View>
 
+      {painting.imageUrl && (
+        <Image
+          source={{ uri: painting.imageUrl }}
+          style={styles.paintingImage}
+          resizeMode="cover"
+        />
+      )}
+
       <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
-        {painting.titleZh}
+        {painting.titleZh || painting.title}
       </Text>
       <Text style={[styles.titleEn, { color: subtextColor }]} numberOfLines={1}>
         {painting.title}
@@ -93,6 +101,13 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 8,
+  },
+  paintingImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: 8,
+    marginBottom: 10,
+    backgroundColor: '#e0e0e0',
   },
   labelRow: {
     flexDirection: 'row',
