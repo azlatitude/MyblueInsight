@@ -74,4 +74,8 @@ src/
 
 ## License
 
-MIT
+Proprietary. See [LICENSE](LICENSE) for details.
+
+## Third-Party Notices
+
+See [NOTICE.md](NOTICE.md) for third-party attributions and licenses.

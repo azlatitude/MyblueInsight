@@ -226,7 +226,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Nighthawks',
     artist: 'Edward Hopper',
     year: '1942',
-    imageUrl: 'https://www.artic.edu/iiif/2/831a05de-d3f6-f4fa-a460-23008dd58dda/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { darkBlue: 0.3, yellow: 0.25, green: 0.15, black: 0.15, gray: 0.15 },
   },
   {
@@ -234,7 +234,7 @@ export const PAINTINGS: Painting[] = [
     title: 'American Gothic',
     artist: 'Grant Wood',
     year: '1930',
-    imageUrl: 'https://www.artic.edu/iiif/2/b272df73-a965-ac37-4172-be4e99483637/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { gray: 0.3, orange: 0.25, darkBlue: 0.15, green: 0.15, black: 0.15 },
   },
   {
@@ -258,7 +258,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Mother and Child',
     artist: 'Pablo Picasso',
     year: '1921',
-    imageUrl: 'https://www.artic.edu/iiif/2/64734461-887d-80b9-8489-e38cb05ac01d/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { pink: 0.4, yellow: 0.25, lightBlue: 0.15, darkBlue: 0.1, gold: 0.1 },
   },
   {
@@ -282,7 +282,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Nightlife',
     artist: 'Archibald John Motley Jr.',
     year: '1943',
-    imageUrl: 'https://www.artic.edu/iiif/2/ec19d5f1-ae0f-5186-d421-4a53dca5fb90/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { red: 0.3, darkBlue: 0.3, black: 0.2, purple: 0.1, orange: 0.1 },
   },
   {
@@ -306,7 +306,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Greyed Rainbow',
     artist: 'Jackson Pollock',
     year: '1953',
-    imageUrl: 'https://www.artic.edu/iiif/2/14dc5686-d7ae-7fe1-ec7d-adf14eb18b53/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { yellow: 0.25, darkBlue: 0.2, lightBlue: 0.2, red: 0.15, black: 0.1, gray: 0.1 },
   },
   {
@@ -314,7 +314,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Untitled (Purple, White, and Red)',
     artist: 'Mark Rothko',
     year: '1953',
-    imageUrl: 'https://www.artic.edu/iiif/2/4d152c81-8389-e426-e5f2-e98902d2515a/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { red: 0.45, purple: 0.25, pink: 0.15, gray: 0.15 },
   },
   {
@@ -322,7 +322,7 @@ export const PAINTINGS: Painting[] = [
     title: 'Black Cross, New Mexico',
     artist: "Georgia O'Keeffe",
     year: '1929',
-    imageUrl: 'https://www.artic.edu/iiif/2/f98530b2-8570-58b2-38b4-e7544b49f1bd/full/400,/0/default.jpg',
+    imageUrl: null,
     moodProfile: { black: 0.3, orange: 0.25, green: 0.2, darkBlue: 0.15, purple: 0.1 },
   },
   {
