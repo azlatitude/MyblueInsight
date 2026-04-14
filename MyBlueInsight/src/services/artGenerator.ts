@@ -239,100 +239,112 @@ export function generateMosaic(freqs: ColorFreq[], seed: number, size: number): 
   return elements;
 }
 
-// ── Fractal: spiral fractal with branching curves ──
+// ── Fractal Flower: IFS-inspired petal fractal with rotational symmetry ──
 export function generateFlowField(freqs: ColorFreq[], seed: number, size: number): SvgDescriptor[] {
   const rand = mulberry32(seed);
   const elements: SvgDescriptor[] = [];
+  const cx = size / 2;
+  const cy = size / 2;
 
-  // Soft warm background
-  elements.push({ type: 'rect', x: 0, y: 0, width: size, height: size, fill: '#FAFAF5', opacity: 1 });
+  // Dark background for contrast
+  elements.push({ type: 'rect', x: 0, y: 0, width: size, height: size, fill: '#0a0a14', opacity: 1 });
 
-  // Draw fractal spiral branches
-  function spiral(cx: number, cy: number, startAngle: number, startR: number, turns: number, depth: number) {
-    if (depth <= 0 || startR < 1) return;
+  // Build a petal bezier path centered at origin, pointing up
+  // Returns SVG path string for a leaf/petal shape
+  function petalPath(px: number, py: number, length: number, width: number, angle: number): string {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    // Transform a point relative to petal base
+    const tx = (x: number, y: number) => (px + x * cos - y * sin).toFixed(1);
+    const ty = (x: number, y: number) => (py + x * sin + y * cos).toFixed(1);
+
+    // Petal shape: base → left curve → tip → right curve → base
+    return `M ${tx(0, 0)} ${ty(0, 0)} `
+      + `C ${tx(-width * 0.6, length * 0.3)} ${ty(-width * 0.6, length * 0.3)} `
+      + `${tx(-width * 0.3, length * 0.75)} ${ty(-width * 0.3, length * 0.75)} `
+      + `${tx(0, length)} ${ty(0, length)} `
+      + `C ${tx(width * 0.3, length * 0.75)} ${ty(width * 0.3, length * 0.75)} `
+      + `${tx(width * 0.6, length * 0.3)} ${ty(width * 0.6, length * 0.3)} `
+      + `${tx(0, 0)} ${ty(0, 0)} Z`;
+  }
+
+  // Recursive petal drawer
+  function drawPetals(px: number, py: number, baseAngle: number, length: number, width: number, depth: number) {
+    if (depth <= 0 || length < 2 || elements.length > 600) return;
 
     const color = weightedColor(freqs, rand);
-    const steps = 30 + Math.floor(rand() * 20);
-    const angleStep = (turns * Math.PI * 2) / steps;
-    const shrink = 0.97 - rand() * 0.02;
-    const pts: { x: number; y: number }[] = [];
+    const alpha = 0.15 + depth * 0.08 + rand() * 0.1;
 
-    let r = startR;
-    let angle = startAngle;
-    for (let i = 0; i <= steps; i++) {
-      const x = cx + Math.cos(angle) * r;
-      const y = cy + Math.sin(angle) * r;
-      pts.push({ x, y });
-      angle += angleStep;
-      r *= shrink;
-    }
+    elements.push({
+      type: 'path',
+      d: petalPath(px, py, length, width, baseAngle),
+      stroke: rgba(color, Math.min(alpha + 0.2, 0.8)),
+      strokeWidth: 0.5,
+      opacity: 1,
+      fill: rgba(color, Math.min(alpha, 0.6)),
+    });
 
-    // Build smooth path
-    if (pts.length > 1) {
-      let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-      for (let j = 1; j < pts.length; j++) {
-        const prev = pts[j - 1], curr = pts[j];
-        d += ` Q ${prev.x.toFixed(1)} ${prev.y.toFixed(1)} ${((prev.x + curr.x) / 2).toFixed(1)} ${((prev.y + curr.y) / 2).toFixed(1)}`;
-      }
-      elements.push({
-        type: 'path',
-        d,
-        stroke: color,
-        strokeWidth: 1 + depth * 0.5,
-        opacity: 0.3 + depth * 0.1,
-      });
-    }
+    // Spawn sub-petals from ~65% up the petal, fanning out
+    const subCount = 2 + Math.floor(rand() * 2);
+    const spread = 0.4 + rand() * 0.4;
+    const childLength = length * (0.55 + rand() * 0.15);
+    const childWidth = width * (0.5 + rand() * 0.15);
 
-    // Leaf dots along the spiral
-    for (let i = 0; i < pts.length; i += 4 + Math.floor(rand() * 3)) {
-      const leafColor = weightedColor(freqs, rand);
-      elements.push({
-        type: 'circle',
-        cx: pts[i].x,
-        cy: pts[i].y,
-        r: 1.5 + rand() * 3 * (depth / 4),
-        fill: rgba(leafColor, 0.3 + rand() * 0.3),
-        opacity: 1,
-      });
-    }
+    const branchFrac = 0.6 + rand() * 0.15;
+    const tcos = Math.cos(baseAngle);
+    const tsin = Math.sin(baseAngle);
+    const bx = px - (length * branchFrac) * tsin;
+    const by = py + (length * branchFrac) * tcos;
 
-    // Branch sub-spirals from endpoints
-    if (depth > 1) {
-      const branchCount = 1 + Math.floor(rand() * 2);
-      for (let b = 0; b < branchCount; b++) {
-        const branchPt = pts[Math.floor(pts.length * (0.3 + rand() * 0.5))];
-        spiral(
-          branchPt.x, branchPt.y,
-          startAngle + (rand() - 0.5) * Math.PI,
-          startR * (0.3 + rand() * 0.2),
-          turns * (0.5 + rand() * 0.3),
-          depth - 1,
-        );
-      }
+    for (let i = 0; i < subCount; i++) {
+      const angleOffset = (i - (subCount - 1) / 2) * spread + (rand() - 0.5) * 0.15;
+      drawPetals(bx, by, baseAngle + angleOffset, childLength, childWidth, depth - 1);
     }
   }
 
-  // Multiple spiral centers
-  const spiralCount = 3 + Math.floor(rand() * 3);
-  for (let i = 0; i < spiralCount; i++) {
-    const cx = size * (0.15 + rand() * 0.7);
-    const cy = size * (0.15 + rand() * 0.7);
-    const startAngle = rand() * Math.PI * 2;
-    const startR = size * (0.1 + rand() * 0.15);
-    const turns = 1.5 + rand() * 2;
-    const direction = rand() > 0.5 ? 1 : -1;
-    spiral(cx, cy, startAngle * direction, startR, turns * direction, 4);
+  // Main flower: radial petals around center
+  const petalCount = 6 + Math.floor(rand() * 5); // 6-10 main petals
+  const baseLength = size * (0.28 + rand() * 0.08);
+  const baseWidth = baseLength * (0.2 + rand() * 0.1);
+  const maxDepth = 4 + Math.floor(rand() * 2);
+
+  for (let i = 0; i < petalCount; i++) {
+    const angle = (i / petalCount) * Math.PI * 2 + rand() * 0.1;
+    drawPetals(cx, cy, angle, baseLength, baseWidth, maxDepth);
   }
 
-  // Scattered accent dots
-  for (let i = 0; i < 30; i++) {
-    const hex = weightedColor(freqs, rand);
+  // Bright center glow
+  for (let i = 3; i >= 0; i--) {
+    const glowColor = weightedColor(freqs, rand);
     elements.push({
       type: 'circle',
-      cx: rand() * size,
-      cy: rand() * size,
-      r: 1 + rand() * 2,
-      fill: rgba(hex, 0.2 + rand() * 0.2),
+      cx, cy,
+      r: size * 0.02 * (i + 1),
+      fill: rgba(glowColor, 0.15 - i * 0.02),
+      opacity: 1,
+    });
+  }
+  elements.push({
+    type: 'circle',
+    cx, cy,
+    r: size * 0.012,
+    fill: 'rgba(255,255,255,0.7)',
+    opacity: 1,
+  });
+
+  // Light ray streaks through center
+  for (let i = 0; i < 4; i++) {
+    const rayAngle = rand() * Math.PI * 2;
+    const rayLen = size * (0.3 + rand() * 0.2);
+    const rx1 = cx + Math.cos(rayAngle) * size * 0.03;
+    const ry1 = cy + Math.sin(rayAngle) * size * 0.03;
+    const rx2 = cx + Math.cos(rayAngle) * rayLen;
+    const ry2 = cy + Math.sin(rayAngle) * rayLen;
+    elements.push({
+      type: 'path',
+      d: `M ${rx1.toFixed(1)} ${ry1.toFixed(1)} L ${rx2.toFixed(1)} ${ry2.toFixed(1)}`,
+      stroke: 'rgba(255,255,255,0.08)',
+      strokeWidth: 1.5 + rand() * 2,
       opacity: 1,
     });
   }

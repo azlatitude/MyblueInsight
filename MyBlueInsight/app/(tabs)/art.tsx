@@ -26,7 +26,7 @@ type ArtStyleType = 'watercolor' | 'mosaic' | 'flowField' | 'nebula';
 const ART_STYLES: { key: ArtStyleType; title: string; subtitle: string }[] = [
   { key: 'watercolor', title: 'Landscape', subtitle: 'Layered hills & sky' },
   { key: 'mosaic', title: 'Mondrian', subtitle: 'Color block composition' },
-  { key: 'flowField', title: 'Spiral', subtitle: 'Fractal swirls & dots' },
+  { key: 'flowField', title: 'Fractal Flower', subtitle: 'Petal bloom patterns' },
   { key: 'nebula', title: 'Nebula', subtitle: 'Cosmic clouds & stars' },
 ];
 
