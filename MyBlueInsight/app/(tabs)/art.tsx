@@ -24,9 +24,9 @@ type Period = 'Week' | 'Month' | 'Year';
 type ArtStyleType = 'watercolor' | 'mosaic' | 'flowField' | 'nebula';
 
 const ART_STYLES: { key: ArtStyleType; title: string; subtitle: string }[] = [
-  { key: 'watercolor', title: 'Watercolor Blend', subtitle: 'Soft flowing colors' },
-  { key: 'mosaic', title: 'Geometric Mosaic', subtitle: 'Crisp colored cells' },
-  { key: 'flowField', title: 'Fractal Tree', subtitle: 'Branching color patterns' },
+  { key: 'watercolor', title: 'Landscape', subtitle: 'Layered hills & sky' },
+  { key: 'mosaic', title: 'Mondrian', subtitle: 'Color block composition' },
+  { key: 'flowField', title: 'Spiral', subtitle: 'Fractal swirls & dots' },
   { key: 'nebula', title: 'Nebula', subtitle: 'Cosmic clouds & stars' },
 ];
 

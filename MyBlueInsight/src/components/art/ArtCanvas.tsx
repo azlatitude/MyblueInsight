@@ -46,6 +46,8 @@ export function ArtCanvas({ entries, style: artStyle, seed, size }: Props) {
                 height={el.height}
                 fill={el.fill}
                 opacity={el.opacity}
+                stroke={el.stroke}
+                strokeWidth={el.strokeWidth}
               />
             );
           }
@@ -68,7 +70,7 @@ export function ArtCanvas({ entries, style: artStyle, seed, size }: Props) {
                 d={el.d}
                 stroke={el.stroke}
                 strokeWidth={el.strokeWidth}
-                fill="none"
+                fill={el.fill ?? 'none'}
                 opacity={el.opacity}
               />
             );
