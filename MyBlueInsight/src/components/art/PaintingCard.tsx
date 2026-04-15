@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
 import { PaintingMatch } from '../../services/paintingMatcher';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
@@ -16,7 +16,6 @@ export function PaintingCard({ match }: Props) {
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
   const { getHexForKey } = usePalette();
   const { painting, similarity } = match;
-  const [imgFailed, setImgFailed] = useState(false);
 
   // Sort mood profile entries by weight descending for the color strip
   const profileEntries = Object.entries(painting.moodProfile)
@@ -34,15 +33,6 @@ export function PaintingCard({ match }: Props) {
           </View>
         </View>
       </View>
-
-      {painting.imageUrl && !imgFailed && (
-        <Image
-          source={{ uri: painting.imageUrl }}
-          style={styles.paintingImage}
-          resizeMode="cover"
-          onError={() => setImgFailed(true)}
-        />
-      )}
 
       <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
         {painting.title}
@@ -100,13 +90,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 8,
-  },
-  paintingImage: {
-    width: '100%',
-    height: 180,
-    borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: '#e0e0e0',
   },
   labelRow: {
     flexDirection: 'row',
