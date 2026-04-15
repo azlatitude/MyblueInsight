@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
 import { PaintingMatch } from '../../services/paintingMatcher';
 import { usePalette } from '../../context/PaletteContext';
@@ -16,6 +16,7 @@ export function PaintingCard({ match }: Props) {
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
   const { getHexForKey } = usePalette();
   const { painting, similarity } = match;
+  const [imgFailed, setImgFailed] = useState(false);
 
   // Sort mood profile entries by weight descending for the color strip
   const profileEntries = Object.entries(painting.moodProfile)
@@ -34,11 +35,12 @@ export function PaintingCard({ match }: Props) {
         </View>
       </View>
 
-      {painting.imageUrl && (
+      {painting.imageUrl && !imgFailed && (
         <Image
           source={{ uri: painting.imageUrl }}
           style={styles.paintingImage}
           resizeMode="cover"
+          onError={() => setImgFailed(true)}
         />
       )}
 
