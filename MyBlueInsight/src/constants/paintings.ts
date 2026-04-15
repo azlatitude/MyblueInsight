@@ -389,7 +389,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'Amedeo Modigliani',
     year: 'c.1917/19',
     imageUrl: 'https://www.artic.edu/iiif/2/e458fc80-cb2e-f5c0-3c81-8c24b0bdc15b/full/400,/0/default.jpg',
-    moodProfile: { yellow: 1 },
+    moodProfile: { orange: 0.3, pink: 0.25, gray: 0.2, darkBlue: 0.15, black: 0.1 },
   },
   {
     id: 'portrait-of-a-woman-with-a-black-fichu',
@@ -533,7 +533,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'George Inness',
     year: '1890',
     imageUrl: 'https://www.artic.edu/iiif/2/ee3eaad2-d2f4-5f04-9fb0-db581bc1d06d/full/400,/0/default.jpg',
-    moodProfile: { yellow: 1 },
+    moodProfile: { darkBlue: 0.35, yellow: 0.25, orange: 0.15, black: 0.15, gray: 0.1 },
   },
   {
     id: 'moulin-de-la-galette',
@@ -589,7 +589,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'Jules Breton',
     year: '1884',
     imageUrl: 'https://www.artic.edu/iiif/2/48b2de88-ba73-8e19-f448-d1cef4a1c847/full/400,/0/default.jpg',
-    moodProfile: { red: 1 },
+    moodProfile: { orange: 0.3, yellow: 0.25, green: 0.2, gold: 0.15, pink: 0.1 },
   },
   {
     id: 'stack-of-wheat-thaw-sunset',
@@ -605,7 +605,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'George Inness',
     year: '1887–89',
     imageUrl: 'https://www.artic.edu/iiif/2/0b66bb30-3170-f7d1-543a-93e02ffe194f/full/400,/0/default.jpg',
-    moodProfile: { orange: 1 },
+    moodProfile: { orange: 0.35, yellow: 0.2, green: 0.15, darkBlue: 0.15, red: 0.15 },
   },
   {
     id: 'stacks-of-wheat-sunset-snow-effect',
@@ -693,7 +693,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'Tosa Mitsuoki',
     year: 'c.1675',
     imageUrl: 'https://www.artic.edu/iiif/2/86e919b9-d366-b3ca-d26f-4c16880474a3/full/400,/0/default.jpg',
-    moodProfile: { green: 0.88, lightBlue: 0.12 },
+    moodProfile: { red: 0.3, orange: 0.3, yellow: 0.2, gold: 0.15, green: 0.05 },
   },
   {
     id: 'october-day',
@@ -701,7 +701,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'Jean Charles Cazin',
     year: '1890–93',
     imageUrl: 'https://www.artic.edu/iiif/2/3ef69544-a84c-dfa4-df6a-346b4b59c351/full/400,/0/default.jpg',
-    moodProfile: { orange: 1 },
+    moodProfile: { orange: 0.3, gray: 0.25, green: 0.2, yellow: 0.15, darkBlue: 0.1 },
   },
   {
     id: 'the-harvesters',
@@ -869,7 +869,7 @@ export const PAINTINGS: Painting[] = [
     artist: 'Apollonio di Giovanni',
     year: '1435–45',
     imageUrl: 'https://www.artic.edu/iiif/2/2295d601-573b-72f8-9760-cfec0d116b48/full/400,/0/default.jpg',
-    moodProfile: { orange: 1 },
+    moodProfile: { orange: 0.25, darkBlue: 0.25, gold: 0.2, green: 0.15, red: 0.15 },
   },
   {
     id: 'interior-the-music-room-strandgade-30',
