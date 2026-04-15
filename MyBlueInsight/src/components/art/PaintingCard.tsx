@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, useColorScheme, TouchableOpacity, Linking } from 'react-native';
 import { PaintingMatch } from '../../services/paintingMatcher';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
+import { PAINTING_IMAGES } from '../../constants/paintingImages';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
@@ -16,6 +17,8 @@ export function PaintingCard({ match }: Props) {
   const cardBg = isDark ? '#1c1c1e' : '#f8f8f8';
   const { getHexForKey } = usePalette();
   const { painting, similarity } = match;
+
+  const localImage = PAINTING_IMAGES[painting.id];
 
   // Sort mood profile entries by weight descending for the color strip
   const profileEntries = Object.entries(painting.moodProfile)
@@ -33,6 +36,14 @@ export function PaintingCard({ match }: Props) {
           </View>
         </View>
       </View>
+
+      {localImage && (
+        <Image
+          source={localImage}
+          style={styles.paintingImage}
+          resizeMode="cover"
+        />
+      )}
 
       <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
         {painting.title}
@@ -90,6 +101,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 8,
+  },
+  paintingImage: {
+    width: '100%',
+    height: 160,
+    borderRadius: 8,
+    marginBottom: 10,
   },
   labelRow: {
     flexDirection: 'row',
