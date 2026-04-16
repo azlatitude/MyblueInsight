@@ -15,7 +15,7 @@
       "supportsTablet": false,
       "icon": "./assets/icon.png",
       "bundleIdentifier": "com.myblueinsight.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "MyBlueInsight saves your mood art to Photos"
       }
