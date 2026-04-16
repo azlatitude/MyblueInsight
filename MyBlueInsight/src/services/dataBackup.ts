@@ -1,4 +1,4 @@
-import { cacheDirectory, writeAsStringAsync, readAsStringAsync } from 'expo-file-system';
+import { cacheDirectory, writeAsStringAsync, readAsStringAsync } from 'expo-file-system/legacy';
 import { shareAsync } from 'expo-sharing';
 import { getDocumentAsync } from 'expo-document-picker';
 import { getAllMoods, saveMood, MoodEntryRow } from '../db/moodRepository';
