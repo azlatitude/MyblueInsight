@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MoodEntryRow, getAllMoods, getMoodsForRange, saveMood } from '../db/moodRepository';
 import { formatDateKey } from '../utils/dateHelpers';
+import { autoBackup } from '../services/iCloudSync';
 
 export function useMoods() {
   const [entries, setEntries] = useState<MoodEntryRow[]>([]);
@@ -20,6 +21,7 @@ export function useMoods() {
     async (date: Date, colorHex: string, moodKey: string, moodName: string, note: string | null, exerciseType: string | null) => {
       await saveMood(formatDateKey(date), colorHex, moodKey, moodName, note, exerciseType);
       await refresh();
+      autoBackup(); // fire-and-forget iCloud backup
     },
     [refresh]
   );
