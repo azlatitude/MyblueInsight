@@ -1,10 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, useColorScheme } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, useColorScheme, Image } from 'react-native';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { isToday, isFuture } from '../../utils/dateHelpers';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey, isLightColor } from '../../constants/palettes';
-import { DiamondGem } from '../DiamondGem';
+
+const diamondImage = require('../../assets/diamond.png');
 
 interface Props {
   date: Date;
@@ -26,6 +27,32 @@ export function DayCell({ date, entry, onPress }: Props) {
     ? (needsDarkText ? '#000' : '#fff')
     : (isDark ? '#fff' : '#000');
 
+  if (isGold) {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={future}
+        style={[
+          styles.cell,
+          {
+            backgroundColor: 'transparent',
+            borderColor: today ? (isDark ? '#fff' : '#000') : 'transparent',
+            borderWidth: today ? 2.5 : 0,
+            borderRadius: 8,
+            opacity: future ? 0.3 : 1,
+          },
+        ]}
+        activeOpacity={0.7}
+      >
+        <Image source={diamondImage} style={styles.diamondBg} resizeMode="contain" />
+        <Text style={[styles.dayText, { color: '#fff' }]}>{dayNum}</Text>
+        {entry?.exercise_type && (
+          <View style={[styles.exerciseDot, { borderColor: 'transparent' }]} />
+        )}
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -42,11 +69,6 @@ export function DayCell({ date, entry, onPress }: Props) {
       activeOpacity={0.7}
     >
       <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
-      {isGold && (
-        <View style={styles.gemBadge}>
-          <DiamondGem size={18} />
-        </View>
-      )}
       {entry?.exercise_type && (
         <View style={[styles.exerciseDot, { borderColor: displayHex ?? 'transparent' }]} />
       )}
@@ -61,12 +83,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayText: { fontSize: 14, fontWeight: '600' },
-  gemBadge: {
+  diamondBg: {
     position: 'absolute',
-    top: -2,
-    right: -2,
+    width: '90%',
+    height: '90%',
   },
+  dayText: { fontSize: 14, fontWeight: '600' },
   exerciseDot: {
     position: 'absolute',
     bottom: 2,

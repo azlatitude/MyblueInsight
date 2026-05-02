@@ -6,7 +6,7 @@ import { useMostCommonMood, useDiversityScore } from '../../hooks/useReviewStats
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
-import { DiamondGem } from '../DiamondGem';
+import { Image } from 'react-native';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -60,9 +60,7 @@ export function YearlyReview({ entries }: Props) {
                     const key = `${year}-${String(mIdx + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
                     const moodKey = entryMap.get(key);
                     return moodKey === 'gold' ? (
-                      <View key={d} style={[styles.yearDot, { backgroundColor: getHexForKey(moodKey), alignItems: 'center', justifyContent: 'center' }]}>
-                        <DiamondGem size={10} />
-                      </View>
+                      <Image key={d} source={require('../../assets/diamond.png')} style={styles.yearGem} resizeMode="contain" />
                     ) : (
                       <View
                         key={d}
@@ -117,6 +115,7 @@ const styles = StyleSheet.create({
   monthCol: { alignItems: 'center', gap: 2 },
   monthLabel: { fontSize: 9, marginBottom: 4 },
   yearDot: { width: 10, height: 10, borderRadius: 2 },
+  yearGem: { width: 10, height: 10 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 16, height: 16, borderRadius: 8, marginBottom: 4 },

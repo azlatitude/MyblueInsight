@@ -7,6 +7,7 @@ import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
 import { DiamondGem } from '../DiamondGem';
+import { Image } from 'react-native';
 
 interface Props { entries: MoodEntryRow[] }
 
@@ -68,16 +69,15 @@ export function WeeklyReview({ entries }: Props) {
             return (
               <View key={i} style={styles.stripDay}>
                 <View style={{ position: 'relative' }}>
-                  <View
-                    style={[
-                      styles.circle,
-                      { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
-                    ]}
-                  />
-                  {entry?.mood_key === 'gold' && (
-                    <View style={styles.gemOverlay}>
-                      <DiamondGem size={20} />
-                    </View>
+                  {entry?.mood_key === 'gold' ? (
+                    <Image source={require('../../assets/diamond.png')} style={styles.diamondShape} resizeMode="contain" />
+                  ) : (
+                    <View
+                      style={[
+                        styles.circle,
+                        { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
+                      ]}
+                    />
                   )}
                   {entry?.exercise_type && (
                     <View style={styles.exerciseBadge}>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   strip: { flexDirection: 'row', justifyContent: 'space-around' },
   stripDay: { alignItems: 'center' },
   circle: { width: 32, height: 32, borderRadius: 16 },
-  gemOverlay: { position: 'absolute', top: -2, right: -2 },
+  diamondShape: { width: 32, height: 32 },
   dayLabel: { fontSize: 11, marginTop: 4 },
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },

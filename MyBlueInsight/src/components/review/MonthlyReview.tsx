@@ -7,6 +7,7 @@ import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
 import { DiamondGem } from '../DiamondGem';
+import { Image } from 'react-native';
 
 interface Props { entries: MoodEntryRow[] }
 
@@ -70,9 +71,7 @@ export function MonthlyReview({ entries }: Props) {
             return (
               <View key={key} style={styles.gridCell}>
                 {entry?.mood_key === 'gold' ? (
-                  <View style={[styles.gridDot, { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') }]}>
-                    <DiamondGem size={20} />
-                  </View>
+                  <Image source={require('../../assets/diamond.png')} style={styles.gridGem} resizeMode="contain" />
                 ) : (
                   <View
                     style={[
@@ -157,7 +156,8 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   gridCell: { width: `${100 / 7}%`, aspectRatio: 1, padding: 2 },
-  gridDot: { flex: 1, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
+  gridDot: { flex: 1, borderRadius: 4 },
+  gridGem: { flex: 1, width: '100%' },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 14, height: 14, borderRadius: 7, marginBottom: 4 },
