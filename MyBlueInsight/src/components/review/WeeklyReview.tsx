@@ -76,7 +76,7 @@ export function WeeklyReview({ entries }: Props) {
                   />
                   {entry?.mood_key === 'gold' && (
                     <View style={styles.gemOverlay}>
-                      <DiamondGem size={16} color={getHexForKey('gold')} />
+                      <DiamondGem size={20} />
                     </View>
                   )}
                   {entry?.exercise_type && (
@@ -104,7 +104,7 @@ export function WeeklyReview({ entries }: Props) {
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
               {d.mood.key === 'gold' ? (
-                <View style={styles.distGem}><DiamondGem size={14} color={d.mood.hex} /></View>
+                <View style={styles.distGem}><DiamondGem size={20} /></View>
               ) : (
                 <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
               )}

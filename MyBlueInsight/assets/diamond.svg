@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" viewBox="0 0 200 180">
+  <defs>
+    <linearGradient id="c1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8DC"/>
+      <stop offset="100%" stop-color="#DAA520"/>
+    </linearGradient>
+    <linearGradient id="c2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4A0"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+    <linearGradient id="c3" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFACD"/>
+      <stop offset="100%" stop-color="#DAA520"/>
+    </linearGradient>
+    <linearGradient id="c4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE8A0"/>
+      <stop offset="100%" stop-color="#C8960C"/>
+    </linearGradient>
+    <linearGradient id="c5" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5D0"/>
+      <stop offset="100%" stop-color="#D4A017"/>
+    </linearGradient>
+    <linearGradient id="p1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE8A0"/>
+      <stop offset="100%" stop-color="#8B6914"/>
+    </linearGradient>
+    <linearGradient id="p2" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#6B4E0A"/>
+    </linearGradient>
+    <linearGradient id="p3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C8960C"/>
+      <stop offset="100%" stop-color="#FFFACD"/>
+    </linearGradient>
+    <linearGradient id="p4" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#7A5A0B"/>
+    </linearGradient>
+    <linearGradient id="p5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEB4"/>
+      <stop offset="100%" stop-color="#9B7B1A"/>
+    </linearGradient>
+    <linearGradient id="p6" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFE070"/>
+      <stop offset="100%" stop-color="#5C4308"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Crown facets -->
+  <polygon points="10,65 40,10 70,65" fill="url(#c1)"/>
+  <polygon points="40,10 80,10 70,65" fill="url(#c2)"/>
+  <polygon points="80,10 120,10 130,65 70,65" fill="url(#c3)"/>
+  <polygon points="120,10 160,10 130,65" fill="url(#c4)"/>
+  <polygon points="160,10 190,65 130,65" fill="url(#c5)"/>
+
+  <!-- Girdle -->
+  <line x1="10" y1="65" x2="190" y2="65" stroke="#B8860B" stroke-width="0.5"/>
+
+  <!-- Pavilion facets -->
+  <polygon points="10,65 50,65 100,170" fill="url(#p1)"/>
+  <polygon points="50,65 80,65 100,170" fill="url(#p2)"/>
+  <polygon points="80,65 100,65 100,170" fill="url(#p3)"/>
+  <polygon points="100,65 120,65 100,170" fill="url(#p5)"/>
+  <polygon points="120,65 150,65 100,170" fill="url(#p4)"/>
+  <polygon points="150,65 190,65 100,170" fill="url(#p6)"/>
+
+  <!-- Deep shadow accents -->
+  <polygon points="30,65 60,65 100,170" fill="#6B4E0A" opacity="0.15"/>
+  <polygon points="140,65 170,65 100,170" fill="#5C4308" opacity="0.12"/>
+
+  <!-- Sparkle -->
+  <g opacity="0.95">
+    <line x1="90" y1="28" x2="90" y2="56" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="76" y1="42" x2="104" y2="42" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="79" y1="31" x2="101" y2="53" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="101" y1="31" x2="79" y2="53" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="90" y1="24" x2="90" y2="60" stroke="white" stroke-width="0.7" stroke-linecap="round"/>
+    <line x1="72" y1="42" x2="108" y2="42" stroke="white" stroke-width="0.7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Highlight reflections -->
+  <polygon points="40,10 55,10 50,35" fill="white" opacity="0.35"/>
+  <polygon points="155,15 165,15 178,55" fill="white" opacity="0.25"/>
+
+  <!-- Facet edge lines -->
+  <g stroke="#B8860B" stroke-width="0.5" fill="none" opacity="0.3">
+    <line x1="70" y1="65" x2="100" y2="170"/>
+    <line x1="130" y1="65" x2="100" y2="170"/>
+    <line x1="50" y1="65" x2="100" y2="170"/>
+    <line x1="150" y1="65" x2="100" y2="170"/>
+    <line x1="70" y1="65" x2="40" y2="10"/>
+    <line x1="130" y1="65" x2="160" y2="10"/>
+  </g>
+</svg>

@@ -44,7 +44,7 @@ export function DayCell({ date, entry, onPress }: Props) {
       <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
       {isGold && (
         <View style={styles.gemBadge}>
-          <DiamondGem size={12} color={displayHex ?? '#DAA520'} />
+          <DiamondGem size={18} />
         </View>
       )}
       {entry?.exercise_type && (
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
   dayText: { fontSize: 14, fontWeight: '600' },
   gemBadge: {
     position: 'absolute',
-    top: 1,
-    right: 1,
+    top: -2,
+    right: -2,
   },
   exerciseDot: {
     position: 'absolute',

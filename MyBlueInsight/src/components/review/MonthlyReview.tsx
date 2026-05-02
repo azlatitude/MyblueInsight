@@ -71,7 +71,7 @@ export function MonthlyReview({ entries }: Props) {
               <View key={key} style={styles.gridCell}>
                 {entry?.mood_key === 'gold' ? (
                   <View style={[styles.gridDot, { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') }]}>
-                    <DiamondGem size={14} color={getHexForKey('gold')} />
+                    <DiamondGem size={20} />
                   </View>
                 ) : (
                   <View
@@ -118,7 +118,7 @@ export function MonthlyReview({ entries }: Props) {
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
               {d.mood.key === 'gold' ? (
-                <View style={styles.distGem}><DiamondGem size={14} color={d.mood.hex} /></View>
+                <View style={styles.distGem}><DiamondGem size={20} /></View>
               ) : (
                 <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
               )}

@@ -94,7 +94,7 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                     ]}
                   >
                     {mood.key === 'gold' && (
-                      <DiamondGem size={18} color={mood.hex} />
+                      <DiamondGem size={20} />
                     )}
                     {selectedHex === mood.hex && (
                       <Ionicons name="checkmark" size={14} color="#fff" />

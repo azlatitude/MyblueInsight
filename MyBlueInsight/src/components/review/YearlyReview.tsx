@@ -61,7 +61,7 @@ export function YearlyReview({ entries }: Props) {
                     const moodKey = entryMap.get(key);
                     return moodKey === 'gold' ? (
                       <View key={d} style={[styles.yearDot, { backgroundColor: getHexForKey(moodKey), alignItems: 'center', justifyContent: 'center' }]}>
-                        <DiamondGem size={8} color={getHexForKey(moodKey)} />
+                        <DiamondGem size={10} />
                       </View>
                     ) : (
                       <View
