@@ -2,7 +2,7 @@
   "expo": {
     "name": "MyBlueInsight",
     "slug": "myblueinsight",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "scheme": "myblueinsight",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
       "supportsTablet": false,
       "icon": "./assets/icon.png",
       "bundleIdentifier": "com.myblueinsight.app",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "MyBlueInsight saves your mood art to Photos"
       }

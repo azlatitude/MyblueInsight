@@ -62,7 +62,7 @@ export function YearlyReview({ entries }: Props) {
                       <View
                         key={d}
                         style={[
-                          styles.yearDot,
+                          moodKey === 'gold' ? styles.yearDiamond : styles.yearDot,
                           { backgroundColor: moodKey ? getHexForKey(moodKey) : (isDark ? '#222' : '#eee') },
                         ]}
                       />
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
   monthCol: { alignItems: 'center', gap: 2 },
   monthLabel: { fontSize: 9, marginBottom: 4 },
   yearDot: { width: 10, height: 10, borderRadius: 2 },
+  yearDiamond: { width: 10, height: 10, borderRadius: 1, transform: [{ rotate: '45deg' }] },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 16, height: 16, borderRadius: 8, marginBottom: 4 },

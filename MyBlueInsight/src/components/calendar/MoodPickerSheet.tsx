@@ -87,13 +87,15 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                 >
                   <View
                     style={[
-                      styles.colorCircle,
+                      mood.key === 'gold' ? styles.colorDiamond : styles.colorCircle,
                       { backgroundColor: mood.hex },
                       selectedHex === mood.hex && styles.selected,
                     ]}
                   >
                     {selectedHex === mood.hex && (
-                      <Ionicons name="checkmark" size={14} color="#fff" />
+                      <View style={mood.key === 'gold' ? styles.diamondCheckmark : undefined}>
+                        <Ionicons name="checkmark" size={14} color="#fff" />
+                      </View>
                     )}
                   </View>
                   <Text style={[styles.moodLabel, { color: textColor }]} numberOfLines={1}>
@@ -217,6 +219,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  colorDiamond: {
+    width: 30,
+    height: 30,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: [{ rotate: '45deg' }],
+  },
+  diamondCheckmark: {
+    transform: [{ rotate: '-45deg' }],
   },
   selected: {
     borderWidth: 3,

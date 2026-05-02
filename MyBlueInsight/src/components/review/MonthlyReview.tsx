@@ -70,7 +70,7 @@ export function MonthlyReview({ entries }: Props) {
               <View key={key} style={styles.gridCell}>
                 <View
                   style={[
-                    styles.gridDot,
+                    entry?.mood_key === 'gold' ? styles.gridDiamond : styles.gridDot,
                     { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') },
                   ]}
                 />
@@ -110,7 +110,7 @@ export function MonthlyReview({ entries }: Props) {
         ) : (
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
-              <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
+              <View style={[d.mood.key === 'gold' ? styles.distDiamond : styles.distDot, { backgroundColor: d.mood.hex }]} />
               <Text style={[styles.distName, { color: textColor }]} numberOfLines={1}>
                 {d.mood.name.split(' / ')[0]}
               </Text>
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   gridCell: { width: `${100 / 7}%`, aspectRatio: 1, padding: 2 },
   gridDot: { flex: 1, borderRadius: 4 },
+  gridDiamond: { flex: 1, borderRadius: 2, transform: [{ rotate: '45deg' }], margin: 2 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 14, height: 14, borderRadius: 7, marginBottom: 4 },
@@ -154,7 +155,8 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 10, color: '#8E8E93', marginTop: 2 },
   distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   distDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-  distName: { width: 80, fontSize: 12 },
+  distDiamond: { width: 10, height: 10, borderRadius: 2, marginRight: 8, transform: [{ rotate: '45deg' }] },
+  distName: { width: 100, fontSize: 12 },
   distBarBg: { flex: 1, height: 14, borderRadius: 3, backgroundColor: 'rgba(128,128,128,0.15)', marginHorizontal: 8, overflow: 'hidden' },
   distBar: { height: '100%', borderRadius: 3 },
   distPct: { width: 32, fontSize: 11, textAlign: 'right' },

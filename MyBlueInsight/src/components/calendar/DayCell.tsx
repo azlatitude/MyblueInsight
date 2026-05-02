@@ -19,7 +19,7 @@ export function DayCell({ date, entry, onPress }: Props) {
   const { getHexForKey } = usePalette();
 
   const displayHex = entry ? getHexForKey(entry.mood_key as MoodKey) : undefined;
-  const bgColor = displayHex ?? 'transparent';
+  const isGold = entry?.mood_key === 'gold';
   const needsDarkText = displayHex ? isLightColor(displayHex) : false;
   const textColor = entry
     ? (needsDarkText ? '#000' : '#fff')
@@ -31,6 +31,7 @@ export function DayCell({ date, entry, onPress }: Props) {
       disabled={future}
       style={[
         styles.cell,
+        isGold && styles.diamond,
         {
           backgroundColor: displayHex ?? 'transparent',
           borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
@@ -40,7 +41,9 @@ export function DayCell({ date, entry, onPress }: Props) {
       ]}
       activeOpacity={0.7}
     >
-      <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      <View style={isGold ? styles.diamondContent : undefined}>
+        <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      </View>
       {entry?.exercise_type && (
         <View style={[styles.exerciseDot, { borderColor: displayHex ?? 'transparent' }]} />
       )}
@@ -54,6 +57,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  diamond: {
+    borderRadius: 6,
+    transform: [{ rotate: '45deg' }],
+  },
+  diamondContent: {
+    transform: [{ rotate: '-45deg' }],
   },
   dayText: { fontSize: 14, fontWeight: '600' },
   exerciseDot: {

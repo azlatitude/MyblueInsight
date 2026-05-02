@@ -69,7 +69,7 @@ export function WeeklyReview({ entries }: Props) {
                 <View style={{ position: 'relative' }}>
                   <View
                     style={[
-                      styles.circle,
+                      entry?.mood_key === 'gold' ? styles.diamond : styles.circle,
                       { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
                     ]}
                   />
@@ -97,7 +97,7 @@ export function WeeklyReview({ entries }: Props) {
         ) : (
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
-              <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
+              <View style={[d.mood.key === 'gold' ? styles.distDiamond : styles.distDot, { backgroundColor: d.mood.hex }]} />
               <Text style={[styles.distName, { color: textColor }]} numberOfLines={1}>
                 {d.mood.name.split(' / ')[0]}
               </Text>
@@ -140,11 +140,13 @@ const styles = StyleSheet.create({
   strip: { flexDirection: 'row', justifyContent: 'space-around' },
   stripDay: { alignItems: 'center' },
   circle: { width: 32, height: 32, borderRadius: 16 },
+  diamond: { width: 28, height: 28, borderRadius: 4, transform: [{ rotate: '45deg' }] },
   dayLabel: { fontSize: 11, marginTop: 4 },
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   distDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-  distName: { width: 80, fontSize: 12 },
+  distDiamond: { width: 10, height: 10, borderRadius: 2, marginRight: 8, transform: [{ rotate: '45deg' }] },
+  distName: { width: 100, fontSize: 12 },
   distBarBg: {
     flex: 1,
     height: 14,
