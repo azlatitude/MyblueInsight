@@ -30,19 +30,25 @@ export function DayCell({ date, entry, onPress }: Props) {
       onPress={onPress}
       disabled={future}
       style={[
-        styles.cell,
-        isGold && styles.diamond,
-        {
-          backgroundColor: displayHex ?? 'transparent',
-          borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
-          borderWidth: today ? 2.5 : (entry ? 0 : 1),
-          opacity: future ? 0.3 : 1,
-        },
+        styles.cellWrapper,
+        { opacity: future ? 0.3 : 1 },
       ]}
       activeOpacity={0.7}
     >
-      <View style={isGold ? styles.diamondContent : undefined}>
-        <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      <View
+        style={[
+          styles.cell,
+          isGold ? styles.diamond : styles.circle,
+          {
+            backgroundColor: displayHex ?? 'transparent',
+            borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
+            borderWidth: today ? 2.5 : (entry ? 0 : 1),
+          },
+        ]}
+      >
+        <View style={isGold ? styles.diamondContent : undefined}>
+          <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+        </View>
       </View>
       {entry?.exercise_type && (
         <View style={[styles.exerciseDot, { borderColor: displayHex ?? 'transparent' }]} />
@@ -52,15 +58,24 @@ export function DayCell({ date, entry, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-  cell: {
+  cellWrapper: {
     flex: 1,
-    borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  cell: {
+    width: '100%',
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circle: {
+    borderRadius: 999,
   },
   diamond: {
     borderRadius: 6,
     transform: [{ rotate: '45deg' }],
+    width: '85%',
   },
   diamondContent: {
     transform: [{ rotate: '-45deg' }],
