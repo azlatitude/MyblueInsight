@@ -15,6 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodEntryRow } from '../../db/moodRepository';
 import { Ionicons } from '@expo/vector-icons';
+import { DiamondGem } from '../DiamondGem';
 
 interface Props {
   date: Date | null;
@@ -87,15 +88,16 @@ export function MoodPickerSheet({ date, existingEntry, onSave, onClose }: Props)
                 >
                   <View
                     style={[
-                      mood.key === 'gold' ? styles.colorDiamond : styles.colorCircle,
+                      styles.colorCircle,
                       { backgroundColor: mood.hex },
                       selectedHex === mood.hex && styles.selected,
                     ]}
                   >
+                    {mood.key === 'gold' && (
+                      <DiamondGem size={18} color={mood.hex} />
+                    )}
                     {selectedHex === mood.hex && (
-                      <View style={mood.key === 'gold' ? styles.diamondCheckmark : undefined}>
-                        <Ionicons name="checkmark" size={14} color="#fff" />
-                      </View>
+                      <Ionicons name="checkmark" size={14} color="#fff" />
                     )}
                   </View>
                   <Text style={[styles.moodLabel, { color: textColor }]} numberOfLines={1}>
@@ -219,17 +221,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  colorDiamond: {
-    width: 30,
-    height: 30,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: [{ rotate: '45deg' }],
-  },
-  diamondCheckmark: {
-    transform: [{ rotate: '-45deg' }],
   },
   selected: {
     borderWidth: 3,

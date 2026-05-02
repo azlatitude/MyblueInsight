@@ -4,6 +4,7 @@ import { MoodEntryRow } from '../../db/moodRepository';
 import { isToday, isFuture } from '../../utils/dateHelpers';
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey, isLightColor } from '../../constants/palettes';
+import { DiamondGem } from '../DiamondGem';
 
 interface Props {
   date: Date;
@@ -30,26 +31,22 @@ export function DayCell({ date, entry, onPress }: Props) {
       onPress={onPress}
       disabled={future}
       style={[
-        styles.cellWrapper,
-        { opacity: future ? 0.3 : 1 },
+        styles.cell,
+        {
+          backgroundColor: displayHex ?? 'transparent',
+          borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
+          borderWidth: today ? 2.5 : (entry ? 0 : 1),
+          opacity: future ? 0.3 : 1,
+        },
       ]}
       activeOpacity={0.7}
     >
-      <View
-        style={[
-          styles.cell,
-          isGold ? styles.diamond : styles.circle,
-          {
-            backgroundColor: displayHex ?? 'transparent',
-            borderColor: today ? (isDark ? '#fff' : '#000') : (entry ? 'transparent' : (isDark ? '#333' : '#ddd')),
-            borderWidth: today ? 2.5 : (entry ? 0 : 1),
-          },
-        ]}
-      >
-        <View style={isGold ? styles.diamondContent : undefined}>
-          <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      <Text style={[styles.dayText, { color: textColor }]}>{dayNum}</Text>
+      {isGold && (
+        <View style={styles.gemBadge}>
+          <DiamondGem size={12} color={displayHex ?? '#DAA520'} />
         </View>
-      </View>
+      )}
       {entry?.exercise_type && (
         <View style={[styles.exerciseDot, { borderColor: displayHex ?? 'transparent' }]} />
       )}
@@ -58,29 +55,18 @@ export function DayCell({ date, entry, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-  cellWrapper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   cell: {
-    width: '100%',
-    aspectRatio: 1,
+    flex: 1,
+    borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  circle: {
-    borderRadius: 999,
-  },
-  diamond: {
-    borderRadius: 6,
-    transform: [{ rotate: '45deg' }],
-    width: '85%',
-  },
-  diamondContent: {
-    transform: [{ rotate: '-45deg' }],
   },
   dayText: { fontSize: 14, fontWeight: '600' },
+  gemBadge: {
+    position: 'absolute',
+    top: 1,
+    right: 1,
+  },
   exerciseDot: {
     position: 'absolute',
     bottom: 2,

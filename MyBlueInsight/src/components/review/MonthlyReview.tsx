@@ -6,6 +6,7 @@ import { useMoodDistribution, useMostCommonMood, useLongestStreak, useDiversityS
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
+import { DiamondGem } from '../DiamondGem';
 
 interface Props { entries: MoodEntryRow[] }
 
@@ -68,12 +69,18 @@ export function MonthlyReview({ entries }: Props) {
             const entry = entries.find((e) => e.date === key);
             return (
               <View key={key} style={styles.gridCell}>
-                <View
-                  style={[
-                    entry?.mood_key === 'gold' ? styles.gridDiamond : styles.gridDot,
-                    { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') },
-                  ]}
-                />
+                {entry?.mood_key === 'gold' ? (
+                  <View style={[styles.gridDot, { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') }]}>
+                    <DiamondGem size={14} color={getHexForKey('gold')} />
+                  </View>
+                ) : (
+                  <View
+                    style={[
+                      styles.gridDot,
+                      { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#222' : '#eee') },
+                    ]}
+                  />
+                )}
               </View>
             );
           })}
@@ -110,7 +117,11 @@ export function MonthlyReview({ entries }: Props) {
         ) : (
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
-              <View style={[d.mood.key === 'gold' ? styles.distDiamond : styles.distDot, { backgroundColor: d.mood.hex }]} />
+              {d.mood.key === 'gold' ? (
+                <View style={styles.distGem}><DiamondGem size={14} color={d.mood.hex} /></View>
+              ) : (
+                <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
+              )}
               <Text style={[styles.distName, { color: textColor }]} numberOfLines={1}>
                 {d.mood.name.split(' / ')[0]}
               </Text>
@@ -146,8 +157,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   gridCell: { width: `${100 / 7}%`, aspectRatio: 1, padding: 2 },
-  gridDot: { flex: 1, borderRadius: 4 },
-  gridDiamond: { flex: 1, borderRadius: 2, transform: [{ rotate: '45deg' }], margin: 2 },
+  gridDot: { flex: 1, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 14, height: 14, borderRadius: 7, marginBottom: 4 },
@@ -155,7 +165,7 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 10, color: '#8E8E93', marginTop: 2 },
   distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   distDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-  distDiamond: { width: 10, height: 10, borderRadius: 2, marginRight: 8, transform: [{ rotate: '45deg' }] },
+  distGem: { width: 14, height: 14, marginRight: 6 },
   distName: { width: 100, fontSize: 12 },
   distBarBg: { flex: 1, height: 14, borderRadius: 3, backgroundColor: 'rgba(128,128,128,0.15)', marginHorizontal: 8, overflow: 'hidden' },
   distBar: { height: '100%', borderRadius: 3 },

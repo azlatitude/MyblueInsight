@@ -6,6 +6,7 @@ import { useMoodDistribution, useExerciseInsight } from '../../hooks/useReviewSt
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
+import { DiamondGem } from '../DiamondGem';
 
 interface Props { entries: MoodEntryRow[] }
 
@@ -69,10 +70,15 @@ export function WeeklyReview({ entries }: Props) {
                 <View style={{ position: 'relative' }}>
                   <View
                     style={[
-                      entry?.mood_key === 'gold' ? styles.diamond : styles.circle,
+                      styles.circle,
                       { backgroundColor: entry ? getHexForKey(entry.mood_key as MoodKey) : (isDark ? '#333' : '#e0e0e0') },
                     ]}
                   />
+                  {entry?.mood_key === 'gold' && (
+                    <View style={styles.gemOverlay}>
+                      <DiamondGem size={16} color={getHexForKey('gold')} />
+                    </View>
+                  )}
                   {entry?.exercise_type && (
                     <View style={styles.exerciseBadge}>
                       <Ionicons name="fitness-outline" size={10} color="#fff" />
@@ -97,7 +103,11 @@ export function WeeklyReview({ entries }: Props) {
         ) : (
           distribution.map((d) => (
             <View key={d.mood.key} style={styles.distRow}>
-              <View style={[d.mood.key === 'gold' ? styles.distDiamond : styles.distDot, { backgroundColor: d.mood.hex }]} />
+              {d.mood.key === 'gold' ? (
+                <View style={styles.distGem}><DiamondGem size={14} color={d.mood.hex} /></View>
+              ) : (
+                <View style={[styles.distDot, { backgroundColor: d.mood.hex }]} />
+              )}
               <Text style={[styles.distName, { color: textColor }]} numberOfLines={1}>
                 {d.mood.name.split(' / ')[0]}
               </Text>
@@ -140,12 +150,12 @@ const styles = StyleSheet.create({
   strip: { flexDirection: 'row', justifyContent: 'space-around' },
   stripDay: { alignItems: 'center' },
   circle: { width: 32, height: 32, borderRadius: 16 },
-  diamond: { width: 28, height: 28, borderRadius: 4, transform: [{ rotate: '45deg' }] },
+  gemOverlay: { position: 'absolute', top: -2, right: -2 },
   dayLabel: { fontSize: 11, marginTop: 4 },
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   distRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   distDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-  distDiamond: { width: 10, height: 10, borderRadius: 2, marginRight: 8, transform: [{ rotate: '45deg' }] },
+  distGem: { width: 14, height: 14, marginRight: 6 },
   distName: { width: 100, fontSize: 12 },
   distBarBg: {
     flex: 1,

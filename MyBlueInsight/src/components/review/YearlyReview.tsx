@@ -6,6 +6,7 @@ import { useMostCommonMood, useDiversityScore } from '../../hooks/useReviewStats
 import { usePalette } from '../../context/PaletteContext';
 import { MoodKey } from '../../constants/palettes';
 import { Ionicons } from '@expo/vector-icons';
+import { DiamondGem } from '../DiamondGem';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -58,11 +59,15 @@ export function YearlyReview({ entries }: Props) {
                   {Array.from({ length: daysInMonth }, (_, d) => {
                     const key = `${year}-${String(mIdx + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
                     const moodKey = entryMap.get(key);
-                    return (
+                    return moodKey === 'gold' ? (
+                      <View key={d} style={[styles.yearDot, { backgroundColor: getHexForKey(moodKey), alignItems: 'center', justifyContent: 'center' }]}>
+                        <DiamondGem size={8} color={getHexForKey(moodKey)} />
+                      </View>
+                    ) : (
                       <View
                         key={d}
                         style={[
-                          moodKey === 'gold' ? styles.yearDiamond : styles.yearDot,
+                          styles.yearDot,
                           { backgroundColor: moodKey ? getHexForKey(moodKey) : (isDark ? '#222' : '#eee') },
                         ]}
                       />
@@ -112,7 +117,6 @@ const styles = StyleSheet.create({
   monthCol: { alignItems: 'center', gap: 2 },
   monthLabel: { fontSize: 9, marginBottom: 4 },
   yearDot: { width: 10, height: 10, borderRadius: 2 },
-  yearDiamond: { width: 10, height: 10, borderRadius: 1, transform: [{ rotate: '45deg' }] },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
   statDot: { width: 16, height: 16, borderRadius: 8, marginBottom: 4 },
